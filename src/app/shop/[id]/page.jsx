@@ -1,0 +1,350 @@
+"use client";
+
+// react import
+import React, { useContext, useEffect, useState } from "react";
+
+// next import
+import { useParams } from "next/navigation";
+import { ShopContext } from "@/context";
+import { useCategories, useProducts } from "@/hooks";
+
+// component import
+import { CustomTable, Loader, ProductChangeModal } from "@/components";
+
+// icon import
+import { CiSearch } from "react-icons/ci";
+import { HiBars3 } from "react-icons/hi2";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { HiPlusSm } from "react-icons/hi";
+import {
+  IoMdArrowDropdown,
+  IoIosArrowForward,
+  IoIosArrowBack,
+} from "react-icons/io";
+import { AiOutlineReload } from "react-icons/ai";
+
+// data import
+import { columns } from "@/assets/data";
+import toast from "react-hot-toast";
+import { woo_api } from "@/config";
+
+function ShopPage() {
+  const [openFilterBox, setOpenFilterBox] = useState({
+    feature: false,
+    column: false,
+  });
+
+  const [selectedCols, setSelectedCols] = useState(columns);
+
+  //   filter state
+
+  const [featured, setFeatured] = useState(null);
+  const [search, setSearch] = useState("");
+
+  const [showDrop, setShowDrop] = useState(false);
+
+  // bulk update state
+
+  const [editedProducts, setEditedProducts] = useState([]);
+  const [updatedItems, setUpdatedItems] = useState([]);
+  const [updating, setUpdating] = useState(false);
+
+  // product add state
+
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  const params = useParams();
+
+  const { shop, setShop, shops } = useContext(ShopContext);
+
+  const { categories } = useCategories(shop);
+
+  useEffect(() => {
+    if (!shop) {
+      const current_shop = shops.find(
+        (shop) => shop?.id === parseInt(params?.id)
+      );
+      setShop(current_shop);
+    }
+  }, [shop, params, shops]);
+
+  const {
+    products,
+    page,
+    refetch,
+    setPage,
+    total_page,
+    loading,
+    perPage,
+    setPerPage,
+  } = useProducts(shop, search, "", "", featured);
+
+  const handleCheckboxChange = (item) => {
+    if (selectedCols.includes(item)) {
+      // Remove the item if it's already selected
+      setSelectedCols(selectedCols.filter((col) => col !== item));
+    } else {
+      const newcols = [...selectedCols, item];
+      setSelectedCols(newcols.sort((a, b) => a?.id - b?.id, 0));
+    }
+  };
+
+  const handleBatchUpdate = () => {
+    if (editedProducts?.length === 0)
+      return toast.error("Please select at least one product to update");
+
+    setUpdating(true);
+    woo_api(shop)
+      .post("products/batch", { update: editedProducts })
+      .then((response) => {
+        setUpdating(false);
+        if (response.status === 200) {
+          toast.success("Products updated successfully");
+          setEditedProducts([]);
+          refetch();
+          const updatedProducts = response?.data?.update?.map(
+            (product) => product?.id
+          );
+          setUpdatedItems((prev) => [...prev, ...updatedProducts]);
+        } else {
+          toast.error("Failed to update products");
+        }
+      })
+      .catch((err) => {
+        setUpdating(false);
+        toast.error("Failed to update products");
+      });
+  };
+
+  const openModal = () => {
+    setScrollPosition(window.pageYOffset);
+    document.body.style.overflow = "hidden";
+    setOpenAddModal(true);
+  };
+
+  const closeModal = () => {
+    document.body.style.overflow = "";
+    window.scrollTo(0, scrollPosition);
+    setOpenAddModal(false);
+  };
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-5">
+        <div>
+          <h2 className="text-3xl font-bold text-black/[0.84] capitalize flex items-center gap-2">
+            {shop?.shop_name}{" "}
+            <AiOutlineReload
+              className="text-primary cursor-pointer"
+              onClick={refetch}
+            />
+          </h2>
+        </div>
+        <div className="flex items-center justify-end gap-2">
+          <button
+            onClick={openModal}
+            className="flex justify-center items-center gap-2 w-[170px] h-[45px] rounded-md border-[1.5px] border-primary bg-primary/[0.08] text-primary"
+          >
+            <HiPlusSm />
+            <p className="text-[14px] font-semibold text-primary">
+              Add Product
+            </p>
+          </button>
+          <button
+            disabled={editedProducts?.length === 0 ? true : false}
+            onClick={handleBatchUpdate}
+            className="flex justify-center items-center gap-2 w-[170px] h-[45px] rounded-md border-[1.5px] border-primary bg-primary disabled:bg-gray-400 disabled:border-gray-400"
+          >
+            <p className="text-[14px] font-semibold text-white">Update</p>
+          </button>
+        </div>
+      </div>
+
+      <div className="h-[86px] w-full bg-[#f7f7f7] rounded-t-lg">
+        <div className="flex justify-between items-center h-full px-5">
+          <div className="min-w-[300px] h-[45px] border-[1.5px] border-black/[0.07] rounded-md bg-white flex items-center gap-1 px-4">
+            <p onClick={() => refetch()} className="w-[30px]">
+              <CiSearch />
+            </p>
+            <input
+              value={search}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  refetch();
+                }
+              }}
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+              className="h-full w-[calc(100%-30px)]"
+              placeholder="Search Products"
+            />
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div
+                onClick={() =>
+                  setOpenFilterBox((prev) => ({
+                    ...prev,
+                    column: !prev.column,
+                  }))
+                }
+                className="min-w-[250px] h-[45px] rounded-md border-[1.5px] border-black/[0.07] bg-white flex justify-between items-center gap-1 px-4 text-black/[0.54] cursor-pointer"
+              >
+                <p className="flex items-center gap-1">
+                  <HiBars3 className="rotate-90" />
+                  Column
+                </p>
+                <p>
+                  <MdOutlineKeyboardArrowDown />
+                </p>
+              </div>
+              {openFilterBox.column && (
+                <div className="absolute p-2 bg-white w-full z-10 rounded-md flex flex-col gap-2 shadow-md border-[1.5px] border-black/[0.07] max-h-[300px] overflow-auto dropdown">
+                  {columns.map((item, i) => (
+                    <div key={item} className="flex items-center gap-2">
+                      <input
+                        checked={selectedCols?.includes(item)}
+                        onChange={() => handleCheckboxChange(item)}
+                        className="w-[20px] h-[20px] cursor-pointer"
+                        name={item}
+                        id={item}
+                        value={item}
+                        type="checkbox"
+                      />
+                      <p className="text-black/[0.54]">{item.Header}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="relative">
+              <div
+                onClick={() =>
+                  setOpenFilterBox((prev) => ({
+                    ...prev,
+                    feature: !prev.feature,
+                  }))
+                }
+                className="min-w-[220px] h-[45px] rounded-md border-[1.5px] border-black/[0.07] bg-white flex justify-between items-center gap-1 px-4 text-black/[0.54] cursor-pointer"
+              >
+                <p className="flex items-center gap-1">
+                  {featured ? "Featured Product" : "All Products"}
+                </p>
+                <p>
+                  <MdOutlineKeyboardArrowDown />
+                </p>
+              </div>
+              {openFilterBox.feature && (
+                <div className="absolute p-2 bg-white w-full z-10 rounded-md flex flex-col gap-2 shadow-md border-[1.5px] border-black/[0.07] max-h-[300px] overflow-auto dropdown">
+                  <div
+                    onClick={() => {
+                      setFeatured(null);
+                      setOpenFilterBox((prev) => ({ ...prev, feature: false }));
+                    }}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <p className="text-black/[0.54]">All Products</p>
+                  </div>
+                  <div
+                    onClick={() => {
+                      setFeatured(true);
+                      setOpenFilterBox((prev) => ({ ...prev, feature: false }));
+                    }}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <p className="text-black/[0.54]">Featured Products</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      {loading || updating ? (
+        <div className="flex justify-center items-center py-10">
+          <Loader />
+        </div>
+      ) : (
+        <CustomTable
+          products={products}
+          columns={selectedCols}
+          setEditedProducts={setEditedProducts}
+          updatedItems={updatedItems}
+          setUpdatedItems={setUpdatedItems}
+          refetch={refetch}
+        />
+      )}
+      <div className="flex justify-between items-center mb-3 mt-5">
+        <div className="flex items-center gap-2">
+          <p className="font-semibold text-black/[0.54] text-sm">
+            Row per page
+          </p>{" "}
+          <p
+            onClick={() => setShowDrop((prev) => !prev)}
+            className="relative px-4 border border-gray-200 rounded-md flex items-center gap-1 cursor-pointer text-black/[0.84 text-sm]"
+          >
+            {perPage} <IoMdArrowDropdown />
+            {showDrop && (
+              <ul
+                onClick={(e) => e.stopPropagation()}
+                className="absolute bg-white w-32 shadow p-2 bottom-7 cursor-default"
+              >
+                {[20, 30, 40, 50, 100].map((item) => (
+                  <li
+                    onClick={() => {
+                      setPerPage(item);
+                      setShowDrop(false);
+                    }}
+                    key={item}
+                    className="text-sm text-black/[0.54] my-1 hover:bg-primary/10 px-2 rounded cursor-pointer"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </p>
+        </div>
+        <div className="flex items-center gap-5">
+          <p className="flex gap-2 text-black/[0.54] text-sm font-semibold">
+            <span>Page: {page}</span> <span> of </span>{" "}
+            <span>{total_page}</span>
+          </p>
+          <p className="flex items-center gap-[6px] text-black/[0.54]">
+            <IoIosArrowBack
+              className="cursor-pointer"
+              onClick={() =>
+                setPage((prev) => {
+                  if (prev === 1) {
+                    return prev;
+                  } else {
+                    return prev - 1;
+                  }
+                })
+              }
+            />
+            <IoIosArrowForward
+              className="cursor-pointer"
+              onClick={() =>
+                setPage((prev) => {
+                  if (prev === total_page) {
+                    return prev;
+                  } else {
+                    return prev + 1;
+                  }
+                })
+              }
+            />
+          </p>
+        </div>
+      </div>
+      {openAddModal && (
+        <ProductChangeModal closeModal={closeModal} refetch={refetch} />
+      )}
+    </div>
+  );
+}
+
+export default ShopPage;

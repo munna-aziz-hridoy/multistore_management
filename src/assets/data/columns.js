@@ -1,0 +1,80 @@
+export const columns = [
+  {
+    id: 1,
+    Header: "SL",
+    accessor: "sl",
+    width: 45,
+  },
+  {
+    id: 2,
+    Header: "Image",
+    accessor: "image",
+    width: 80,
+  },
+  {
+    id: 3,
+    Header: "Name & JAN Code",
+    accessor: "name_and_jan_code",
+    width: 250,
+  },
+  {
+    id: 4,
+    Header: "Price",
+    accessor: "price",
+    width: 130,
+  },
+  {
+    id: 5,
+    Header: "Regular Price",
+    accessor: "regular_price",
+    width: 160,
+  },
+  {
+    id: 6,
+    Header: "Stock",
+    accessor: "stock_status",
+    width: 140,
+  },
+  {
+    id: 7,
+    Header: "Manage Stock",
+    accessor: "manage_stock",
+    width: 140,
+  },
+  {
+    id: 8,
+    Header: "Quantity",
+    accessor: "quantity",
+    width: 140,
+  },
+  {
+    id: 9,
+    Header: "Featured",
+    accessor: "featured",
+    width: 130,
+  },
+  {
+    id: 10,
+    Header: "Sale Price",
+    accessor: "sale_price",
+    width: 130,
+  },
+  {
+    id: 11,
+    Header: "Total Sale",
+    accessor: "total_sale",
+    width: 120,
+  },
+  {
+    id: 12,
+    Header: "Category",
+    accessor: "category",
+    width: 130,
+  },
+  {
+    id: 13,
+    Header: "Action",
+    accessor: "action",
+    width: 150,
+  },
+];

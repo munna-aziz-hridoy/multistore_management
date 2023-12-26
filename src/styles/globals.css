@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("./fonts.css");
+
+body {
+  font-family: "Gilroy", sans-serif;
+}
+
+input {
+  outline: none !important;
+}
+
+.menu_container::-webkit-scrollbar {
+  width: 4px;
+}
+.menu_container::-webkit-scrollbar-track {
+  background: #0060e3;
+}
+.menu_container::-webkit-scrollbar-thumb {
+  background: #97acff;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+}
+.menu_container::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+
+.dropdown::-webkit-scrollbar {
+  width: 6px !important;
+}
+.dropdown::-webkit-scrollbar-track {
+  background: #c4dcff;
+}
+.dropdown::-webkit-scrollbar-thumb {
+  background: #7b95ff;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+}
+.dropdown::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+
+svg {
+  font-size: 24px !important;
+}
+
+.tox-statusbar {
+  display: none !important;
+}
