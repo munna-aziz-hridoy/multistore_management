@@ -30,9 +30,9 @@ const Row = ({
   const { shop } = useContext(ShopContext);
 
   const [currentProduct, setCurrentProduct] = useState({
-    price: product?.price,
-    regular_price: product?.regular_price,
-    sale_price: product?.sale_price,
+    price: `${product?.price}`,
+    regular_price: `${product?.regular_price}`,
+    sale_price: `${product?.sale_price}`,
     stock_status: product?.stock_status,
     featured: product?.featured,
     manage_stock: product?.manage_stock,
@@ -83,9 +83,9 @@ const Row = ({
           setIs_update(false);
           toast.success("Product updated successfully");
           setCurrentProduct({
-            price: response?.data?.price,
-            regular_price: response?.data?.regular_price,
-            sale_price: response?.data?.sale_price,
+            price: `${response?.data?.price}`,
+            regular_price: `${response?.data?.regular_price}`,
+            sale_price: `${response?.data?.sale_price}`,
             stock_status: response?.data?.stock_status,
             featured: response?.data?.featured,
             manage_stock: response?.data?.manage_stock,
@@ -98,9 +98,9 @@ const Row = ({
           toast.error("Something went wrong");
           setIs_update(false);
           setCurrentProduct({
-            price: product?.price,
-            regular_price: product?.regular_price,
-            sale_price: product?.sale_price,
+            price: `${product?.price}`,
+            regular_price: `${product?.regular_price}`,
+            sale_price: `${product?.sale_price}`,
             stock_status: product?.stock_status,
             featured: product?.featured,
             manage_stock: product?.manage_stock,
@@ -114,6 +114,37 @@ const Row = ({
         setUpdating(false);
         toast.error(err?.response?.data?.message || "Something went wrong");
       });
+  };
+
+  const handleDelete = () => {
+    const confirm = window.confirm("Are you sure you want to delete?");
+
+    if (confirm) {
+      setUpdating(true);
+      woo_api(shop)
+        .delete(`products/${product?.id}`)
+        .then((response) => {
+          setUpdating(false);
+          if (response.status === 200) {
+            toast.success("Product deleted successfully");
+            refetch();
+          } else {
+            toast.error("Something went wrong");
+          }
+        })
+        .catch((err) => {
+          setUpdating(false);
+          toast.error(err?.response?.data?.message || "Something went wrong");
+        });
+    }
+  };
+
+  const variationWarning = () => {
+    if (product?.variations?.length > 0) {
+      toast.error(
+        "This is a variation product, you need to chanage the value from variation to change the field"
+      );
+    }
   };
 
   const openModal = () => {
@@ -193,11 +224,14 @@ const Row = ({
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
               >
-                <div className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center">
+                <div
+                  onClick={variationWarning}
+                  className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center"
+                >
                   <span className="inline-block w-2">$</span>
                   <input
                     type="text"
-                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent"
+                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
                     value={currentProduct?.price}
                     onChange={(e) => {
                       setIs_update(true);
@@ -206,6 +240,7 @@ const Row = ({
                         price: e.target.value,
                       }));
                     }}
+                    disabled={product?.variations?.length > 0 ? true : false}
                   />
                 </div>
               </td>
@@ -215,11 +250,14 @@ const Row = ({
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
               >
-                <div className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center">
+                <div
+                  onClick={variationWarning}
+                  className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center"
+                >
                   <span className="inline-block w-2">$</span>
                   <input
                     type="text"
-                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent"
+                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
                     value={currentProduct?.regular_price}
                     onChange={(e) => {
                       setIs_update(true);
@@ -228,6 +266,7 @@ const Row = ({
                         regular_price: e.target.value,
                       }));
                     }}
+                    disabled={product?.variations?.length > 0 ? true : false}
                   />
                 </div>
               </td>
@@ -237,26 +276,31 @@ const Row = ({
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
               >
-                <select
-                  value={currentProduct?.stock_status}
-                  defaultValue={currentProduct?.stock_status}
-                  onChange={(e) => {
-                    setIs_update(true);
-                    setCurrentProduct((prev) => ({
-                      ...prev,
-                      stock_status: e.target.value,
-                    }));
-                  }}
-                  disabled={currentProduct?.manage_stock}
-                  className={`${
-                    currentProduct?.stock_status === "instock"
-                      ? "text-[#25af55] bg-[#25AF55]/10 outline-[#25AF55]/10"
-                      : "text-[#f00] bg-[#f00]/10 outline-[#f00]/10"
-                  }   font-medium rounded text-sm px-4 py-2 outline  cursor-pointer`}
-                >
-                  <option value={"instock"}>In Stock</option>
-                  <option value={"outofstock"}>Out of Stock</option>
-                </select>
+                <div onClick={variationWarning}>
+                  <select
+                    value={currentProduct?.stock_status}
+                    defaultValue={currentProduct?.stock_status}
+                    onChange={(e) => {
+                      setIs_update(true);
+                      setCurrentProduct((prev) => ({
+                        ...prev,
+                        stock_status: e.target.value,
+                      }));
+                    }}
+                    disabled={
+                      currentProduct?.manage_stock ||
+                      product?.variations?.length > 0
+                    }
+                    className={`${
+                      currentProduct?.stock_status === "instock"
+                        ? "text-[#25af55] disabled:text-[#25af55]/70 bg-[#25AF55]/20 disabled:bg-[#25AF55]/5 outline-[#25AF55]/20 disabled:outline-[#25AF55]/5"
+                        : "text-[#f00] disabled:text-[#f00]/70 bg-[#f00]/20 disabled:bg-[#f00]/5 outline-[#f00]/20 disabled:outline-[#f00]/5"
+                    }   font-medium rounded text-sm px-4 py-2 outline  cursor-pointer `}
+                  >
+                    <option value={"instock"}>In Stock</option>
+                    <option value={"outofstock"}>Out of Stock</option>
+                  </select>
+                </div>
               </td>
             )}
             {isExists("Manage Stock") && (
@@ -299,7 +343,7 @@ const Row = ({
                       }));
                     }}
                     type="text"
-                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent"
+                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent "
                   />
                 </div>
               </td>
@@ -334,11 +378,14 @@ const Row = ({
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
               >
-                <div className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center">
+                <div
+                  onClick={variationWarning}
+                  className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center"
+                >
                   <span className="inline-block w-2">$</span>
                   <input
                     type="text"
-                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent"
+                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
                     value={currentProduct?.sale_price}
                     defaultValue={currentProduct.sale_price}
                     onChange={(e) => {
@@ -348,6 +395,7 @@ const Row = ({
                         sale_price: e.target.value,
                       }));
                     }}
+                    disabled={product?.variations?.length > 0 ? true : false}
                   />
                 </div>
               </td>
@@ -394,9 +442,9 @@ const Row = ({
                       onClick={() => {
                         setIs_update(false);
                         setCurrentProduct({
-                          price: product?.price,
-                          regular_price: product?.regular_price,
-                          sale_price: product?.sale_price,
+                          price: `${product?.price}`,
+                          regular_price: `${product?.regular_price}`,
+                          sale_price: `${product?.sale_price}`,
                           stock_status: product?.stock_status,
                           featured: product?.featured,
                           manage_stock: product?.manage_stock,
@@ -413,7 +461,7 @@ const Row = ({
                       <BsX />
                     </button>
                   ) : (
-                    <button className="text-red-500">
+                    <button onClick={handleDelete} className="text-red-500">
                       <CgTrash />
                     </button>
                   )}

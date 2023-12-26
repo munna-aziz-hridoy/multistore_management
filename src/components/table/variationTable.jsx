@@ -114,12 +114,36 @@ function Row({
             stock_quantity: variation?.stock_quantity,
             on_sale: variation?.on_sale,
           });
+          toast.error("Something went wrong");
         }
       })
       .catch((err) => {
         setUpdating(false);
         toast.error(err?.response?.data?.message || "Something went wrong");
       });
+  };
+
+  const handleDelete = () => {
+    const confirm = window.confirm("Are you sure you want to delete?");
+
+    if (confirm) {
+      setUpdating(true);
+      woo_api(shop)
+        .delete(`products/${id}/variations/${variation?.id}`)
+        .then((response) => {
+          setUpdating(false);
+          if (response.status === 200) {
+            toast.success("Variation deleted successfully");
+            refetch();
+          } else {
+            toast.error("Something went wrong");
+          }
+        })
+        .catch((err) => {
+          setUpdating(false);
+          toast.error(err?.response?.data?.message || "Something went wrong");
+        });
+    }
   };
 
   return (
@@ -311,7 +335,7 @@ function Row({
                   <BsX />
                 </button>
               ) : (
-                <button className="text-red-500">
+                <button onClick={handleDelete} className="text-red-500">
                   <CgTrash />
                 </button>
               )}

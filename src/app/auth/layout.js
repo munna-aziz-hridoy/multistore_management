@@ -11,17 +11,37 @@ import logo from "@/assets/images/logo.png";
 import logoIcon from "@/assets/images/logo_icon.png";
 
 // components
-import { Divider, Image } from "@/components";
+import { Divider, Image, Loader } from "@/components";
 
 // icons
 import { FcGoogle } from "react-icons/fc";
 import { BsFacebook } from "react-icons/bs";
 import { useRouter } from "next/navigation";
+
+// firebase import
+import { useSignInWithGoogle } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase.init";
+import toast from "react-hot-toast";
+
 function Layout({ children }) {
   // next hooks
 
   const path = usePathname();
   const router = useRouter();
+
+  // firebase
+
+  const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
+
+  const handleGoogleSignIn = () => {
+    signInWithGoogle().then((response) => {
+      if (response.user) {
+        router.push("/");
+      } else {
+        toast.error("Something went wrong");
+      }
+    });
+  };
 
   return (
     <div className="flex flex-col lg:flex-row h-screen">
@@ -58,14 +78,23 @@ function Layout({ children }) {
 
             <Divider text={"OR"} />
 
-            <button className="w-full h-[45px] border-2 border-black/10 rounded-xl flex justify-center items-center gap-4 text-black/[0.84] font-semibold my-5">
-              <FcGoogle fontSize={28} />
-              Sign in with Google
+            <button
+              onClick={handleGoogleSignIn}
+              className="w-full h-[45px] border-2 border-black/10 rounded-xl flex justify-center items-center gap-4 text-black/[0.84] font-semibold my-5"
+            >
+              {loading ? (
+                <Loader />
+              ) : (
+                <p className="flex justify-center items-center gap-4">
+                  <FcGoogle fontSize={28} />
+                  Sign in with Google
+                </p>
+              )}
             </button>
-            <button className="w-full h-[45px] border-2 border-black/10 rounded-xl flex justify-center items-center gap-4 text-black/[0.84] font-semibold">
+            {/* <button className="w-full h-[45px] border-2 border-black/10 rounded-xl flex justify-center items-center gap-4 text-black/[0.84] font-semibold">
               <BsFacebook fontSize={28} color="#1977F3" />
               Sign in with Facebook
-            </button>
+            </button> */}
           </div>
         </div>
         <p className="text-black/[0.38] text-xs">

@@ -31,6 +31,25 @@ const useProducts = (
     api = shopify_api(shop);
     options = {};
     endpoint = "products";
+
+    // if (!shopify) {
+    //   console.log("Shopify api missing");
+    // }
+
+    // shopify.clients.Rest(shop?.domain).then((client) => {
+    //   api = client;
+    // });
+
+    // return {
+    //   products: [],
+    //   loading: false,
+    //   refetch: null,
+    //   total_page: 0,
+    //   page: 1,
+    //   setPage: null,
+    //   perPage: 1,
+    //   setPerPage: 1,
+    // };
   }
 
   const fetchProducts = () => {
@@ -56,9 +75,9 @@ const useProducts = (
     fetchProducts();
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, [page, featured, category, shop, perPage]);
+  // useEffect(() => {
+  //   fetchProducts();
+  // }, [page, featured, category, shop, perPage]);
 
   return {
     products,

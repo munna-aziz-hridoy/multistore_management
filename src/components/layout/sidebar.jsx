@@ -47,7 +47,7 @@ function Sidebar() {
   const handleSignout = () => {
     signOut().then(() => {
       toast.success("Sign out successfully");
-      router.push("/auth/login");
+      router.push("/auth/signin");
     });
   };
 
