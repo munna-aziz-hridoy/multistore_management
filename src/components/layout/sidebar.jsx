@@ -46,8 +46,8 @@ function Sidebar() {
 
   const handleSignout = () => {
     signOut().then(() => {
-      toast.success("Sign out successfully");
       router.push("/auth/signin");
+      toast.success("Sign out successfully");
     });
   };
 
@@ -139,22 +139,26 @@ function Sidebar() {
             >
               {collapse ? "ut" : "utilities"}
             </p>
-            <div
-              className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[2px] ${
-                collapse && "justify-center"
-              }`}
-            >
-              <CgProfile fontSize={22} />
-              {!collapse && delay && <p>Profile</p>}
-            </div>
-            <div
-              className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[2px] ${
-                collapse && "justify-center"
-              }`}
-            >
-              <IoSettingsOutline fontSize={22} />
-              {!collapse && delay && <p>Setting</p>}
-            </div>
+            <Link href={"/profile"}>
+              <div
+                className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[2px] ${
+                  collapse && "justify-center"
+                }`}
+              >
+                <CgProfile fontSize={22} />
+                {!collapse && delay && <p>Profile</p>}
+              </div>
+            </Link>
+            <Link href={"/setting"}>
+              <div
+                className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[2px] ${
+                  collapse && "justify-center"
+                }`}
+              >
+                <IoSettingsOutline fontSize={22} />
+                {!collapse && delay && <p>Setting</p>}
+              </div>
+            </Link>
           </div>
           <div>
             <p
