@@ -130,6 +130,7 @@ function StepTwo({ platform }) {
         cs: data.consumer_secret,
         user_id: db_id,
         id: hex_id,
+        url: `/shop/${hex_id}`,
         platform: data.platform,
         type: data.type,
         currency: data.currency,

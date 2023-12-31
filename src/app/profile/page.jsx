@@ -18,17 +18,42 @@ import { Image } from "@/components";
 
 // firebase
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase.init";
-import { ShopContext } from "@/context";
+import { auth, firestore } from "@/firebase.init";
+import { ShopContext, UserContext } from "@/context";
+import { deleteDoc, doc } from "firebase/firestore";
+import toast from "react-hot-toast";
 
 function Profile() {
   const [user] = useAuthState(auth);
 
-  const { shops } = useContext(ShopContext);
+  const { shops, setShops } = useContext(ShopContext);
+  const { db_id } = useContext(UserContext);
+
+  const deleteDocument = async (shop) => {
+    const confirm = window.confirm("Are you sure you want to delete shop?");
+
+    if (confirm) {
+      try {
+        await deleteDoc(doc(firestore, "sites", shop?.doc_id));
+        const updatedShops = shops.filter((item) => item?.id !== shop?.id);
+        setShops(updatedShops);
+
+        localStorage.setItem("woo_shop_list", {
+          userId: db_id,
+          shops: updatedShops,
+        });
+
+        toast.success("Shop deleted successfully");
+      } catch (error) {
+        console.error("Error removing document: ", error);
+        toast.error("Error removing document");
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col xl:flex-row gap-5">
-      <div className="min-w-[300px]  bg-[#f5f5f5] opacity-90 rounded-lg flex flex-col justify-center items-center p-5 gap-2 shadow">
+      <div className="min-w-[300px] w-1/3  bg-[#f5f5f5] opacity-90 rounded-lg flex flex-col justify-center items-center p-5 gap-2 shadow">
         <Image
           src={user?.photoURL || defaultProfile?.src}
           w={120}
@@ -49,7 +74,7 @@ function Profile() {
         </div>
       </div>
 
-      <div className="">
+      <div className="w-2/3">
         <h2 className="text-2xl font-bold text-black/[0.84]">Shop List</h2>
         <p className="text-sm text-black/[0.54]">
           Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quibusdam
@@ -79,7 +104,12 @@ function Profile() {
                         </p>
                       </div>
                     </div>
-                    <button className=" p-2 text-[#f74747] rounded-md bg-[#f74747]/[0.07] text-xs border border-[#f74747]">
+                    <button
+                      onClick={() => {
+                        deleteDocument(shop);
+                      }}
+                      className=" p-2 text-[#f74747] rounded-md bg-[#f74747]/[0.07] text-xs border border-[#f74747]"
+                    >
                       <FaRegTrashAlt
                         style={{
                           fontSize: "20px",
@@ -114,7 +144,12 @@ function Profile() {
                         </p>
                       </div>
                     </div>
-                    <button className=" p-2 text-[#f74747] rounded-md bg-[#f74747]/[0.07] text-xs border border-[#f74747]">
+                    <button
+                      onClick={() => {
+                        deleteDocument(shop);
+                      }}
+                      className=" p-2 text-[#f74747] rounded-md bg-[#f74747]/[0.07] text-xs border border-[#f74747]"
+                    >
                       <FaRegTrashAlt
                         style={{
                           fontSize: "20px",

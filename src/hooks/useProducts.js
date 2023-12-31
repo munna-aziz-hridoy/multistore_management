@@ -14,7 +14,6 @@ const useProducts = (
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(20);
 
-  let api = woo_api(shop);
   let options = {
     page: products.length === 0 ? 1 : page,
     per_page: perPage,
@@ -27,57 +26,64 @@ const useProducts = (
   };
   let endpoint = "products";
 
-  if (shop?.platform === "shopify") {
-    api = shopify_api(shop);
-    options = {};
-    endpoint = "products";
-
-    // if (!shopify) {
-    //   console.log("Shopify api missing");
-    // }
-
-    // shopify.clients.Rest(shop?.domain).then((client) => {
-    //   api = client;
-    // });
-
-    // return {
-    //   products: [],
-    //   loading: false,
-    //   refetch: null,
-    //   total_page: 0,
-    //   page: 1,
-    //   setPage: null,
-    //   perPage: 1,
-    //   setPerPage: 1,
-    // };
-  }
-
   const fetchProducts = () => {
-    setLoading(true);
-    api
-      ?.get(endpoint, options)
-      .then((res) => {
-        setLoading(false);
+    if (shop?.platform === "shopify") {
+      // setLoading(true);
 
-        if (res.headers) {
-          setTotal_page(parseInt(res?.headers["x-wp-totalpages"]));
-        }
-        setProducts(res?.data);
+      // shopify_api(shop)
+      //   .get({
+      //     path: "products",
+      //   })
+      //   .then((res) => {
+      //     console.log(res);
+      //   });
+
+      const url = `https://${shop?.domain}/admin/api/2022-04/products.json`;
+
+      // Define the base part of the URL that you want to remove
+      const baseToRemove = "https://";
+
+      // Define the API path to add
+      const apiPath = "admin/api/2022-04/products.json";
+
+      // Remove the base part and add the API path
+      const apiUrl = shop?.domain?.replaceAll(baseToRemove, "") + apiPath;
+
+      fetch(apiUrl, {
+        headers: {
+          "X-Shopify-Access-Token": "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",
+          "content-type": "application/json",
+        },
       })
-      .catch((err) => {
-        setLoading(false);
-        setProducts([]);
-      })
-      ?.finally(() => setLoading(false));
+        .then((res) => res.json())
+        .then((data) => {});
+    } else {
+      setLoading(true);
+      woo_api(shop)
+        ?.get(endpoint, options)
+        .then((res) => {
+          setLoading(false);
+
+          if (res.headers) {
+            setTotal_page(parseInt(res?.headers["x-wp-totalpages"]));
+          }
+          setProducts(res?.data);
+        })
+        .catch((err) => {
+          setLoading(false);
+          setProducts([]);
+        })
+        ?.finally(() => setLoading(false));
+    }
   };
 
   const refetch = () => {
     fetchProducts();
   };
 
-  // useEffect(() => {
-  //   fetchProducts();
-  // }, [page, featured, category, shop, perPage]);
+  useEffect(() => {
+    fetchProducts();
+  }, [page, featured, category, shop, perPage]);
 
   return {
     products,

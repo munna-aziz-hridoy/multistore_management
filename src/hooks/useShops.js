@@ -35,7 +35,10 @@ const useShops = (userId) => {
         getDocs(q).then((data) => {
           setLoading(false);
 
-          const sites = data.docs.map((item) => item.data());
+          const sites = data.docs.map((item) => ({
+            doc_id: item?.id,
+            ...item.data(),
+          }));
 
           const shops = sites?.map((item) => {
             return {
@@ -66,7 +69,7 @@ const useShops = (userId) => {
     fetchShop();
   };
 
-  return { shops, loading, refetch };
+  return { shops, loading, refetch, setShops };
 };
 
 export default useShops;
