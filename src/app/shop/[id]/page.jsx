@@ -140,8 +140,6 @@ function ShopPage() {
     setOpenAddModal(false);
   };
 
-  console.log(products);
-
   return (
     <div>
       <div className="flex justify-between items-center mb-5">

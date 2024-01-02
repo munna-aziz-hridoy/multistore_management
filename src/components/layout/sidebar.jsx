@@ -100,7 +100,7 @@ function Sidebar() {
                   ))}
               </div>
             </div>
-            <div className="mt-[34px]">
+            {/* <div className="mt-[34px]">
               <p className="text-[10px] text-white/[0.54] px-[25px] uppercase flex items-center gap-1">
                 <span>{collapse ? "SP" : "shopify"}</span>
                 {!collapse && <Image src={shopifyImg.src} w={30} h={30} />}
@@ -112,7 +112,7 @@ function Sidebar() {
                     <SidebarItem name={shop?.shop_name} shop={shop} />
                   ))}
               </div>
-            </div>
+            </div> */}
           </div>
         )}
         <div className="w-full h-[1px] bg-white/20 mt-3" />
