@@ -16,6 +16,26 @@ const useProducts = (
 
   const fetchProducts = () => {
     if (shop?.platform === "shopify") {
+      const shopName = shop?.domain?.replaceAll("https://", "");
+      const api_key = shop?.ck;
+      const api_secret = shop?.cs;
+      const accessToken = "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";
+
+      const url = `https://${shopName}/admin/api/2022-04/products.json`;
+
+      setLoading(true);
+
+      fetch(url, {
+        headers: {
+          Authorization: `Basic ${api_key}:${accessToken}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setLoading(false);
+          setProducts(data);
+          setTotal_page(1);
+        });
     } else {
       let options = {
         page: products.length === 0 ? 1 : page,

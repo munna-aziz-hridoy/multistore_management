@@ -7,16 +7,18 @@ const useCategories = (shop, parent = 0) => {
 
   const fetchCategories = () => {
     if (shop) {
-      setLoading(true);
-      woo_api(shop)
-        .get("products/categories", { per_page: 100, parent })
-        .then((res) => {
-          setLoading(false);
+      if (shop?.platform !== "shopify") {
+        setLoading(true);
+        woo_api(shop)
+          .get("products/categories", { per_page: 100, parent })
+          .then((res) => {
+            setLoading(false);
 
-          if (res.status === 200) {
-            setCategories(res?.data);
-          }
-        });
+            if (res.status === 200) {
+              setCategories(res?.data);
+            }
+          });
+      }
     }
   };
 
