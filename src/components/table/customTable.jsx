@@ -15,6 +15,7 @@ import { ShopContext } from "@/context";
 import { woo_api } from "@/config";
 import toast from "react-hot-toast";
 import { Loader, ProductChangeModal, VariationTable } from "..";
+import { useCurrency } from "@/hooks";
 
 const Row = ({
   product,
@@ -24,6 +25,7 @@ const Row = ({
   updatedItems,
   setUpdatedItems,
   refetch,
+  currency,
 }) => {
   // context
 
@@ -228,7 +230,10 @@ const Row = ({
                   onClick={variationWarning}
                   className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center"
                 >
-                  <span className="inline-block w-2">$</span>
+                  <span
+                    className="inline-block w-2"
+                    dangerouslySetInnerHTML={{ __html: currency?.symbol }}
+                  />
                   <input
                     type="text"
                     className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
@@ -254,7 +259,10 @@ const Row = ({
                   onClick={variationWarning}
                   className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center"
                 >
-                  <span className="inline-block w-2">$</span>
+                  <span
+                    className="inline-block w-2"
+                    dangerouslySetInnerHTML={{ __html: currency?.symbol }}
+                  />
                   <input
                     type="text"
                     className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
@@ -382,12 +390,15 @@ const Row = ({
                   onClick={variationWarning}
                   className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center"
                 >
-                  <span className="inline-block w-2">$</span>
+                  <span
+                    className="inline-block w-2"
+                    dangerouslySetInnerHTML={{ __html: currency?.symbol }}
+                  />
                   <input
                     type="text"
                     className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
                     value={currentProduct?.sale_price}
-                    defaultValue={currentProduct.sale_price}
+                    defaultValue={currentProduct.sale_price || ""}
                     onChange={(e) => {
                       setIs_update(true);
                       setCurrentProduct((prev) => ({
@@ -507,6 +518,7 @@ function CustomTable({
   updatedItems,
   setUpdatedItems,
   refetch,
+  currency,
 }) {
   return (
     <div className="overflow-x-auto">
@@ -536,6 +548,7 @@ function CustomTable({
               updatedItems={updatedItems}
               setUpdatedItems={setUpdatedItems}
               refetch={refetch}
+              currency={currency}
             />
           ))}
         </tbody>

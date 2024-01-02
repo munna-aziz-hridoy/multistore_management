@@ -6,15 +6,15 @@ import React, { useContext, useEffect, useState } from "react";
 // next import
 import { useParams } from "next/navigation";
 import { ShopContext } from "@/context";
-import { useCategories, useProducts } from "@/hooks";
+import { useCategories, useCurrency, useProducts } from "@/hooks";
 
 // component import
-import { CustomTable, Loader, ProductChangeModal } from "@/components";
+import { CatDrop, CustomTable, Loader, ProductChangeModal } from "@/components";
 
 // icon import
 import { CiSearch } from "react-icons/ci";
 import { HiBars3 } from "react-icons/hi2";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { MdOutlineKeyboardArrowDown, MdOutlineCategory } from "react-icons/md";
 import { HiPlusSm } from "react-icons/hi";
 import {
   IoMdArrowDropdown,
@@ -32,6 +32,7 @@ function ShopPage() {
   const [openFilterBox, setOpenFilterBox] = useState({
     feature: false,
     column: false,
+    categories: false,
   });
 
   const [selectedCols, setSelectedCols] = useState(columns);
@@ -40,7 +41,7 @@ function ShopPage() {
 
   const [featured, setFeatured] = useState(null);
   const [search, setSearch] = useState("");
-
+  const [selectedCat, setSelectedCat] = useState(null);
   const [showDrop, setShowDrop] = useState(false);
 
   // bulk update state
@@ -57,8 +58,7 @@ function ShopPage() {
   const params = useParams();
 
   const { shop, setShop, shops } = useContext(ShopContext);
-
-  const { categories } = useCategories(shop);
+  const { categories, loading: catLoading } = useCategories(shop);
 
   useEffect(() => {
     if (!shop) {
@@ -78,7 +78,8 @@ function ShopPage() {
     loading,
     perPage,
     setPerPage,
-  } = useProducts(shop, search, "", "", featured);
+  } = useProducts(shop, search, "", `${selectedCat?.id || ""}`, featured);
+  const { currency, loading: currencyLoading } = useCurrency(shop);
 
   const handleCheckboxChange = (item) => {
     if (selectedCols.includes(item)) {
@@ -117,6 +118,16 @@ function ShopPage() {
       });
   };
 
+  const handleReload = () => {
+    setSearch("");
+    setSelectedCat(null);
+    setFeatured(null);
+
+    setTimeout(() => {
+      refetch();
+    }, [150]);
+  };
+
   const openModal = () => {
     setScrollPosition(window.pageYOffset);
     document.body.style.overflow = "hidden";
@@ -137,7 +148,7 @@ function ShopPage() {
             {shop?.shop_name}{" "}
             <AiOutlineReload
               className="text-primary cursor-pointer"
-              onClick={refetch}
+              onClick={handleReload}
             />
           </h2>
         </div>
@@ -182,6 +193,41 @@ function ShopPage() {
             />
           </div>
           <div className="flex items-center gap-4">
+            <div className="relative">
+              <div
+                onClick={() =>
+                  setOpenFilterBox((prev) => ({
+                    ...prev,
+                    categories: !prev.categories,
+                  }))
+                }
+                className="min-w-[250px] h-[45px] rounded-md border-[1.5px] border-black/[0.07] bg-white flex justify-between items-center gap-1 px-4 text-black/[0.54] cursor-pointer"
+              >
+                <p className="flex items-center gap-1">
+                  <MdOutlineCategory />
+                  {selectedCat?.name || "Categories"}
+                </p>
+                <p>
+                  <MdOutlineKeyboardArrowDown />
+                </p>
+              </div>
+              {openFilterBox.categories && (
+                <div className="absolute p-2 bg-white w-full z-10 rounded-md flex flex-col gap-2 shadow-md border-[1.5px] border-black/[0.07]  max-h-[300px] overflow-y-auto dropdown overflow-x-hidden">
+                  {catLoading ? (
+                    <div className="flex justify-center items-center w-full">
+                      <Loader />
+                    </div>
+                  ) : (
+                    <CatDrop
+                      categories={categories}
+                      selectedCat={selectedCat}
+                      setSelectedCat={setSelectedCat}
+                      setOpenFilterBox={setOpenFilterBox}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
             <div className="relative">
               <div
                 onClick={() =>
@@ -262,7 +308,7 @@ function ShopPage() {
           </div>
         </div>
       </div>
-      {loading || updating ? (
+      {loading || updating || currencyLoading ? (
         <div className="flex justify-center items-center py-10">
           <Loader />
         </div>
@@ -274,6 +320,7 @@ function ShopPage() {
           updatedItems={updatedItems}
           setUpdatedItems={setUpdatedItems}
           refetch={refetch}
+          currency={currency}
         />
       )}
       <div className="flex justify-between items-center mb-3 mt-5">

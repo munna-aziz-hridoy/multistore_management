@@ -1,4 +1,5 @@
 import useCategories from "./useCategories";
+import useCurrency from "./useCurrency";
 import useProduct from "./useProduct";
 import useProductVariations from "./useProductVariations";
 import useProducts from "./useProducts";
@@ -12,4 +13,5 @@ export {
   useProductVariations,
   useUserInfo,
   useProduct,
+  useCurrency,
 };

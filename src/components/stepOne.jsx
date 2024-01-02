@@ -30,7 +30,7 @@ function StepOne({ setStep, setPlatform, platform }) {
         Platform select
       </h2>
       <div className="flex justify-center items-center gap-5">
-        <div
+        {/* <div
           onClick={() => handleSelectPlatform("shopify")}
           className={`w-1/2 min-h-[350px] rounded-md border-2  flex justify-center items-center relative cursor-pointer ${
             platform === "shopify" ? "border-primary" : "border-black/[0.14]"
@@ -42,7 +42,7 @@ function StepOne({ setStep, setPlatform, platform }) {
               <BsCheck />
             </p>
           )}
-        </div>
+        </div> */}
         <div
           onClick={() => handleSelectPlatform("wordpress")}
           className={`w-1/2 min-h-[350px] rounded-md border-2  flex justify-center items-center relative cursor-pointer ${

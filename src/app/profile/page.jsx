@@ -45,7 +45,6 @@ function Profile() {
 
         toast.success("Shop deleted successfully");
       } catch (error) {
-        console.error("Error removing document: ", error);
         toast.error("Error removing document");
       }
     }

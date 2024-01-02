@@ -12,6 +12,7 @@ import Auth from "./layout/auth";
 import VariationTable from "./table/variationTable";
 import ProductChangeModal from "./productEditModal";
 import RichEditor from "./common/editor";
+import CatDrop from "./common/cat_drop";
 
 export {
   Imgs as Image,
@@ -28,4 +29,5 @@ export {
   VariationTable,
   ProductChangeModal,
   RichEditor,
+  CatDrop,
 };
