@@ -52,6 +52,20 @@ const Row = ({
   const [openVariations, setOpenVariations] = useState(false);
 
   useEffect(() => {
+    setCurrentProduct({
+      price: `${product?.price}`,
+      regular_price: `${product?.regular_price}`,
+      sale_price: `${product?.sale_price}`,
+      stock_status: product?.stock_status,
+      featured: product?.featured,
+      manage_stock: product?.manage_stock,
+      stock_quantity: product?.stock_quantity,
+      name: product?.name,
+      sku: product?.sku,
+    });
+  }, [product]);
+
+  useEffect(() => {
     if (is_update) {
       setEditedProducts &&
         setEditedProducts((prev) => {
