@@ -10,55 +10,58 @@ const useShops = (userId) => {
     if (userId) {
       setLoading(true);
 
-      const prevCredStr = localStorage.getItem("woo_shop_list");
+      // const prevCredStr = localStorage.getItem("woo_shop_list");
 
-      if (prevCredStr) {
-        const prevCred = JSON.parse(prevCredStr);
+      // if (prevCredStr) {
+      //   const prevCred = JSON.parse(prevCredStr);
 
-        if (prevCred?.userId === userId) {
-          const storedShops = prevCred?.shops?.map((item) => {
-            return {
-              ...item,
-            };
-          });
+      //   if (prevCred?.userId === userId) {
+      //     const storedShops = prevCred?.shops?.map((item) => {
+      //       return {
+      //         ...item,
+      //       };
+      //     });
 
-          setShops(storedShops);
-          setLoading(false);
-          return;
-        }
-      } else {
-        const q = query(
-          collection(firestore, "sites"),
-          where("user_id", "==", userId)
-        );
+      //     setShops(storedShops);
+      //     setLoading(false);
+      //     return;
+      //   } else {
+      //     setLoading(false);
+      //     return;
+      //   }
+      // } else {
+      const q = query(
+        collection(firestore, "sites"),
+        where("user_id", "==", userId)
+      );
 
-        getDocs(q).then((data) => {
-          setLoading(false);
+      getDocs(q).then((data) => {
+        setLoading(false);
 
-          const sites = data.docs.map((item) => ({
-            doc_id: item?.id,
-            ...item.data(),
-          }));
+        const sites = data.docs.map((item) => ({
+          doc_id: item?.id,
+          ...item.data(),
+        }));
 
-          const shops = sites?.map((item) => {
-            return {
-              ...item,
+        const shops = sites?.map((item) => {
+          return {
+            ...item,
 
-              title: item?.shop_name,
-              type: "item",
-              url: `/shop/${item?.id}`,
-            };
-          });
-
-          setShops(shops);
-
-          localStorage.setItem(
-            "woo_shop_list",
-            JSON.stringify({ userId, shops })
-          );
+            title: item?.shop_name,
+            type: "item",
+            url: `/shop/${item?.id}`,
+          };
         });
-      }
+
+        setShops(shops);
+
+        localStorage.setItem(
+          "woo_shop_list",
+          JSON.stringify({ userId, shops })
+        );
+      });
     }
+    // }
   };
 
   useEffect(() => {

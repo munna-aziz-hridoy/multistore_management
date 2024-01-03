@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 // next import
 import Link from "next/link";
@@ -20,10 +20,13 @@ import { useRouter } from "next/navigation";
 
 // firebase import
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase.init";
+import { auth, firestore } from "@/firebase.init";
 import toast from "react-hot-toast";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 function Layout({ children }) {
+  const [loading, setLoading] = useState(false);
+
   // next hooks
 
   const path = usePathname();
@@ -31,14 +34,39 @@ function Layout({ children }) {
 
   // firebase
 
-  const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
+  const [signInWithGoogle, user, , error] = useSignInWithGoogle(auth);
 
   const handleGoogleSignIn = () => {
+    setLoading(true);
     signInWithGoogle().then((response) => {
       if (response.user) {
+        const userq = query(
+          collection(firestore, "users"),
+          where("email", "==", response.user.email)
+        );
+
+        getDocs(userq).then((snapshot) => {
+          if (snapshot.empty) {
+            addDoc(collection(firestore, "users"), {
+              first_name: response.user.displayName.split(" ")[0],
+              last_name: response.user.displayName.split(" ")[1],
+              email: response.user.email,
+            }).then((createdUser) => {
+              setLoading(false);
+              toast.success("Sign up successfully!");
+              router.push("/");
+            });
+          } else {
+            setLoading(false);
+            toast.success("Sign up successfully!");
+            router.push("/");
+          }
+        });
+
         router.push("/");
       } else {
         toast.error("Something went wrong");
+        setLoading(false);
       }
     });
   };

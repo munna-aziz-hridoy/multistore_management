@@ -18,7 +18,6 @@ const useUserInfo = (email) => {
       getDocs(q).then((data) => {
         if (!data.empty) {
           const user = data.docs[0];
-
           setDb_id(user.id);
           const sites = user.data()?.sites || [];
           setSites(sites);

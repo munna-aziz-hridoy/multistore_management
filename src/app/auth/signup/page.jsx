@@ -14,11 +14,12 @@ import {
   useCreateUserWithEmailAndPassword,
   useUpdateProfile,
 } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase.init";
+import { auth, firestore } from "@/firebase.init";
 
 // utils import
 import { firebaseMessageExtract } from "@/utils";
 import { useRouter } from "next/navigation";
+import { addDoc, collection } from "firebase/firestore";
 
 function Signup() {
   // error state
@@ -143,15 +144,21 @@ function Signup() {
             updateProfile({
               displayName: `${data.first_name} ${data.last_name}`,
             }).then(() => {
-              toast.success("Sign up successfully!");
-              email.value = "";
-              first_name.value = "";
-              last_name.value = "";
-              password.value = "";
-              confirm_password.value = "";
-              setTerms(false);
-              setLoading(false);
-              router.push("/");
+              addDoc(collection(firestore, "users"), {
+                first_name: data?.first_name,
+                last_name: data?.last_name,
+                email: data?.email,
+              }).then((createdUser) => {
+                toast.success("Sign up successfully!");
+                email.value = "";
+                first_name.value = "";
+                last_name.value = "";
+                password.value = "";
+                confirm_password.value = "";
+                setTerms(false);
+                setLoading(false);
+                router.push("/");
+              });
             });
           } else {
             toast.error("Sign up failed");

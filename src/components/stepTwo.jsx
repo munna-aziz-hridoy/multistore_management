@@ -1,7 +1,7 @@
 "use client";
 
 // react import
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 // data import
 import { currency, shoptype } from "@/assets/data";
@@ -59,8 +59,17 @@ function StepTwo({ platform }) {
   const [adding, setAdding] = useState(false);
 
   // context
-  const { db_id, sites } = useContext(UserContext);
+  const {
+    db_id,
+    sites,
+    loading,
+    refetch: userRefetch,
+  } = useContext(UserContext);
   const { refetch } = useContext(ShopContext);
+
+  useEffect(() => {
+    userRefetch();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -139,17 +148,17 @@ function StepTwo({ platform }) {
       addDoc(collection(firestore, "sites"), shopDoc).then((savedDoc) => {
         let shops = [shopDoc];
 
-        const prevCredStr = localStorage.getItem("woo_shop_list");
+        // const prevCredStr = localStorage.getItem("woo_shop_list");
 
-        if (prevCredStr) {
-          const prevCred = JSON.parse(prevCredStr);
-          shops = [shopDoc, ...prevCred.shops];
-        }
+        // if (prevCredStr) {
+        //   const prevCred = JSON.parse(prevCredStr);
+        //   shops = [shopDoc, ...prevCred.shops];
+        // }
 
-        localStorage.setItem(
-          "woo_shop_list",
-          JSON.stringify({ userId: db_id, shops })
-        );
+        // localStorage.setItem(
+        //   "woo_shop_list",
+        //   JSON.stringify({ userId: db_id, shops })
+        // );
 
         const shop_id = savedDoc.id;
         const docRef = doc(firestore, "users", db_id);
@@ -174,7 +183,7 @@ function StepTwo({ platform }) {
       <h2 className="text-base text-black/[0.84] font-semibold mb-6">
         Add shop
       </h2>
-      {adding ? (
+      {adding || loading ? (
         <div className="flex justify-center items-center py-5">
           <Loader />
         </div>
