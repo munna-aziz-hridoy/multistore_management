@@ -78,8 +78,12 @@ function ShopPage() {
       );
       setShop(current_shop);
     } else {
-      const cols = columns.filter((col) => shop?.cols?.includes(col.Header));
-      setSelectedCols(cols);
+      const savedCols = shop?.cols;
+
+      if (savedCols && savedCols?.length) {
+        const cols = columns.filter((col) => shop?.cols?.includes(col.Header));
+        setSelectedCols(cols);
+      }
 
       if (shop?.custom_cols) {
         setCustom_cols(shop?.custom_cols);

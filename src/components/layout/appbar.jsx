@@ -11,6 +11,7 @@ import { RiMenuFoldFill, RiMenuUnfoldFill } from "react-icons/ri";
 
 // image import
 import profile from "@/assets/images/profile.jpg";
+import Link from "next/link";
 
 function Appbar() {
   const { collapse, sidebarToggle } = useContext(SidebarContext);
@@ -32,11 +33,13 @@ function Appbar() {
         <p className="text-white font-semibold text-lg">Mobile Shop Japan</p>
       </div>
       <div className="flex justify-center items-center h-full px-7">
-        <img
-          src={profile.src}
-          className="w-[50px] h-[50px] rounded-full shadow-md"
-          alt="profile"
-        />
+        <Link href="/profile">
+          <img
+            src={profile.src}
+            className="w-[50px] h-[50px] rounded-full shadow-md"
+            alt="profile"
+          />
+        </Link>
       </div>
     </div>
   );

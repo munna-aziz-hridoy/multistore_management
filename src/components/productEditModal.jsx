@@ -100,6 +100,7 @@ function ProductChange({
   update = false,
   setUpdated = null,
   refetch = null,
+  custom_cols = [],
 }) {
   const [openCat, setOpenCat] = useState(false);
 
@@ -114,6 +115,7 @@ function ProductChange({
     stock_quantiy: "",
     status: "publish",
     weight: "",
+    meta_data: [],
   });
 
   const [selectedCats, setSelectedCats] = useState([]);
@@ -142,6 +144,7 @@ function ProductChange({
         categories: product_cats,
         status,
         weight,
+        meta_data,
       } = product;
 
       setCurrentProduct({
@@ -155,6 +158,7 @@ function ProductChange({
         stock_quantiy,
         status,
         weight,
+        meta_data,
       });
 
       setDescription(product_desc);
@@ -191,6 +195,7 @@ function ProductChange({
               stock_quantiy: response?.data?.stock_quantity,
               status: response?.data?.status,
               weight: response?.data?.weight,
+              meta_data: response?.data?.meta_data,
             });
 
             setUpdated &&
@@ -204,6 +209,8 @@ function ProductChange({
                 manage_stock: response?.data?.manage_stock,
                 stock_quantiy: response?.data?.stock_quantity,
                 status: response?.data?.status,
+                weight: response?.data?.weight,
+                meta_data: response?.data?.meta_data,
               });
 
             closeModal();
@@ -221,6 +228,7 @@ function ProductChange({
               stock_quantiy: product?.stock_quantity,
               status: product?.status,
               weight: product?.weight,
+              meta_data: product?.meta_data,
             });
           }
         })
@@ -247,6 +255,7 @@ function ProductChange({
               stock_quantiy: response?.data?.stock_quantity,
               status: response?.data?.status,
               weight: response?.data?.weight,
+              meta_data: response?.data?.meta_data,
             });
             refetch && refetch();
             closeModal();
@@ -510,6 +519,42 @@ function ProductChange({
               </div>
             </div>
           </div>
+
+          {/* Custom Fields */}
+
+          {custom_cols?.map((col) => {
+            return (
+              <div className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center">
+                <input
+                  type="text"
+                  className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
+                  value={
+                    currentProduct?.meta_data?.find(
+                      (meta) => meta?.key === col?.meta_key
+                    )?.value
+                  }
+                  // defaultValue={metaData?.value}
+                  onChange={(e) => {
+                    // setIs_update(true);
+                    setCurrentProduct((prev) => ({
+                      ...prev,
+                      meta_data: prev?.meta_data?.map((item) => {
+                        if (item?.key === col?.meta_key) {
+                          return {
+                            ...item,
+                            value: e.target.value,
+                          };
+                        } else {
+                          return item;
+                        }
+                      }),
+                    }));
+                  }}
+                  disabled={product?.variations?.length > 0 ? true : false}
+                />
+              </div>
+            );
+          })}
 
           <div>
             <p className="text-sm font-semibold text-black/[0.54] mb-2">

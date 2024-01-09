@@ -119,7 +119,7 @@ function Profile() {
                 ))}
             </div>
           </div>
-          <div className="bg-[#f5f5f5] opacity-90 rounded-xl p-5 w-1/2 min-w-[461px]">
+          {/* <div className="bg-[#f5f5f5] opacity-90 rounded-xl p-5 w-1/2 min-w-[461px]">
             <Image src={shopify.src} w={127} h={36.5} />
             <div className="flex flex-col gap-3 mt-7">
               {shops
@@ -158,7 +158,7 @@ function Profile() {
                   </div>
                 ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

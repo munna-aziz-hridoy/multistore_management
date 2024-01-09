@@ -28,7 +28,7 @@ import { auth } from "@/firebase.init";
 // firebase import
 import { useSignOut } from "react-firebase-hooks/auth";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 function Sidebar() {
   //  context
@@ -43,6 +43,7 @@ function Sidebar() {
   // next hooks
 
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleSignout = () => {
     signOut().then(() => {
@@ -117,15 +118,13 @@ function Sidebar() {
         )}
         <div className="w-full h-[1px] bg-white/20 mt-3" />
         <div
-          className={`${
-            collapse ? "p-[10px] mt-3" : "p-[23px]"
-          } flex flex-col justify-between h-[calc(100%-390px)]`}
+          className={` flex flex-col justify-between h-[calc(100%-390px)] mt-5`}
         >
           <div>
             <Link href="/add-shop">
               <div
                 className={`flex justify-between items-center  text-white bg-[#1879ff] rounded-[10px] cursor-pointer ${
-                  collapse ? "p-[12px]" : "p-[14px]"
+                  collapse ? "p-[12px] mx-[10px]" : "p-[14px] mx-[23px]"
                 }`}
               >
                 {!collapse && delay && <p>Add Shop</p>}
@@ -134,16 +133,20 @@ function Sidebar() {
             </Link>
 
             <p
-              className={`text-[10px] text-white/[0.54] px-[2px] uppercase mt-[50px] ${
-                collapse && "text-center"
+              className={`text-[10px] text-white/[0.54] px-[23px] uppercase mt-[50px] mb-3 ${
+                collapse && "text-center px-[10px]"
               }`}
             >
               {collapse ? "ut" : "utilities"}
             </p>
             <Link href={"/profile"}>
               <div
-                className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[2px] ${
+                className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[20px] border-l-4 ${
                   collapse && "justify-center"
+                } ${
+                  pathname.includes("profile")
+                    ? "border-[#D1E4FF] bg-white/[0.05]"
+                    : "border-transparent bg-transparent"
                 }`}
               >
                 <CgProfile fontSize={22} />
@@ -152,8 +155,12 @@ function Sidebar() {
             </Link>
             <Link href={"/setting"}>
               <div
-                className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[2px] ${
+                className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[20px] border-l-4 ${
                   collapse && "justify-center"
+                } ${
+                  pathname.includes("setting")
+                    ? "border-[#D1E4FF] bg-white/[0.05]"
+                    : "border-transparent bg-transparent"
                 }`}
               >
                 <IoSettingsOutline fontSize={22} />
@@ -161,7 +168,7 @@ function Sidebar() {
               </div>
             </Link>
           </div>
-          <div>
+          <div className={collapse ? "px-[10px]" : "px-[23px]"}>
             <p
               className={`text-[10px] text-white/[0.54] px-[2px] uppercase mt-[50px] ${
                 collapse && "text-center"

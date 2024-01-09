@@ -575,6 +575,7 @@ const Row = ({
             id={product?.id}
             update
             setUpdated={setCurrentProduct}
+            custom_cols={custom_cols}
           />
         </Modal>
       )}
