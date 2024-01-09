@@ -14,7 +14,7 @@ import { BsX } from "react-icons/bs";
 import { ShopContext } from "@/context";
 import { woo_api } from "@/config";
 import toast from "react-hot-toast";
-import { Loader, ProductChangeModal, VariationTable } from "..";
+import { Loader, Modal, ProductChange, VariationTable } from "..";
 import { useCurrency } from "@/hooks";
 
 const Row = ({
@@ -26,6 +26,7 @@ const Row = ({
   setUpdatedItems,
   refetch,
   currency,
+  custom_cols,
 }) => {
   // context
 
@@ -62,6 +63,7 @@ const Row = ({
       stock_quantity: product?.stock_quantity,
       name: product?.name,
       sku: product?.sku,
+      meta_data: product?.meta_data,
     });
   }, [product]);
 
@@ -108,6 +110,7 @@ const Row = ({
             stock_quantity: response?.data?.stock_quantity,
             name: response?.data?.name,
             sku: response?.data?.sku,
+            meta_data: response?.data?.meta_data,
           });
           setUpdatedItems((prev) => [...prev, response?.data?.id]);
         } else {
@@ -123,6 +126,7 @@ const Row = ({
             stock_quantity: product?.stock_quantity,
             name: product?.name,
             sku: product?.sku,
+            meta_data: product?.meta_data,
           });
         }
       })
@@ -185,7 +189,10 @@ const Row = ({
         } ${openVariations && "shadow-xl"}`}
       >
         {updating ? (
-          <td colSpan={columns?.length} className="text-center">
+          <td
+            colSpan={columns?.length + custom_cols?.length + 1}
+            className="text-center"
+          >
             <div className="flex justify-center items-center py-3">
               <Loader />
             </div>
@@ -452,57 +459,105 @@ const Row = ({
                 </p>
               </td>
             )}
-            {isExists("Action") && (
-              <td
-                align="center"
-                className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
-              >
-                <div className="flex items-center justify-center gap-4">
-                  <button onClick={openModal} className="text-black/[0.54]">
-                    <RiBallPenLine />
-                  </button>
 
-                  {is_update ? (
-                    <button
-                      onClick={() => {
-                        setIs_update(false);
-                        setCurrentProduct({
-                          price: `${product?.price}`,
-                          regular_price: `${product?.regular_price}`,
-                          sale_price: `${product?.sale_price}`,
-                          stock_status: product?.stock_status,
-                          featured: product?.featured,
-                          manage_stock: product?.manage_stock,
-                          stock_quantity: product?.stock_quantity,
-                          name: product?.name,
-                          sku: product?.sku,
-                        });
-                        setEditedProducts((prev) =>
-                          prev?.filter((item) => item?.id !== product?.id)
-                        );
+            {custom_cols?.map((col) => {
+              const metaData = product?.meta_data?.find(
+                (item) => item?.key === col?.meta_key
+              );
+
+              return (
+                <td
+                  align="center"
+                  className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
+                >
+                  <div className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center">
+                    {col?.meta_key?.includes("price") && (
+                      <span
+                        className="inline-block w-2"
+                        dangerouslySetInnerHTML={{ __html: currency?.symbol }}
+                      />
+                    )}
+                    <input
+                      type="text"
+                      className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
+                      value={
+                        currentProduct?.meta_data?.find(
+                          (meta) => meta?.key === col?.meta_key
+                        )?.value
+                      }
+                      defaultValue={metaData?.value}
+                      onChange={(e) => {
+                        setIs_update(true);
+                        setCurrentProduct((prev) => ({
+                          ...prev,
+                          meta_data: prev?.meta_data?.map((item) => {
+                            if (item?.key === col?.meta_key) {
+                              return {
+                                ...item,
+                                value: e.target.value,
+                              };
+                            } else {
+                              return item;
+                            }
+                          }),
+                        }));
                       }}
-                      className="bg-red-500 w-6 h-6 rounded-full text-white"
-                    >
-                      <BsX />
-                    </button>
-                  ) : (
-                    <button onClick={handleDelete} className="text-red-500">
-                      <CgTrash />
-                    </button>
-                  )}
+                      disabled={product?.variations?.length > 0 ? true : false}
+                    />
+                  </div>
+                </td>
+              );
+            })}
+            <td
+              align="center"
+              className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
+            >
+              <div className="flex items-center justify-center gap-4">
+                <button onClick={openModal} className="text-black/[0.54]">
+                  <RiBallPenLine />
+                </button>
 
+                {is_update ? (
                   <button
-                    disabled={!is_update}
-                    onClick={handleUpdateProduct}
-                    className={` w-6 h-6 rounded-full text-white ${
-                      is_update ? "bg-[#25AF55]" : "bg-gray-500"
-                    }`}
+                    onClick={() => {
+                      setIs_update(false);
+                      setCurrentProduct({
+                        price: `${product?.price}`,
+                        regular_price: `${product?.regular_price}`,
+                        sale_price: `${product?.sale_price}`,
+                        stock_status: product?.stock_status,
+                        featured: product?.featured,
+                        manage_stock: product?.manage_stock,
+                        stock_quantity: product?.stock_quantity,
+                        name: product?.name,
+                        sku: product?.sku,
+                        meta_data: product?.meta_data,
+                      });
+                      setEditedProducts((prev) =>
+                        prev?.filter((item) => item?.id !== product?.id)
+                      );
+                    }}
+                    className="bg-red-500 w-6 h-6 rounded-full text-white"
                   >
-                    <IoIosCheckmark />
+                    <BsX />
                   </button>
-                </div>
-              </td>
-            )}
+                ) : (
+                  <button onClick={handleDelete} className="text-red-500">
+                    <CgTrash />
+                  </button>
+                )}
+
+                <button
+                  disabled={!is_update}
+                  onClick={handleUpdateProduct}
+                  className={` w-6 h-6 rounded-full text-white ${
+                    is_update ? "bg-[#25AF55]" : "bg-gray-500"
+                  }`}
+                >
+                  <IoIosCheckmark />
+                </button>
+              </div>
+            </td>
           </>
         )}
       </tr>
@@ -514,12 +569,14 @@ const Row = ({
         </tr>
       )}
       {isModalOpen && (
-        <ProductChangeModal
-          closeModal={closeModal}
-          id={product?.id}
-          update
-          setUpdated={setCurrentProduct}
-        />
+        <Modal closeModal={closeModal}>
+          <ProductChange
+            closeModal={closeModal}
+            id={product?.id}
+            update
+            setUpdated={setCurrentProduct}
+          />
+        </Modal>
       )}
     </>
   );
@@ -533,6 +590,7 @@ function CustomTable({
   setUpdatedItems,
   refetch,
   currency,
+  custom_cols,
 }) {
   return (
     <div className="overflow-x-auto">
@@ -549,11 +607,31 @@ function CustomTable({
                 {col.Header}
               </th>
             ))}
+            {custom_cols?.length > 0 &&
+              custom_cols?.map((col) => (
+                <th
+                  className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[14px] p-[10px] capitalize"
+                  style={{
+                    width: 200,
+                  }}
+                >
+                  {col?.col_name}
+                </th>
+              ))}
+            <th
+              className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[14px] p-[10px]"
+              style={{
+                width: 150,
+              }}
+            >
+              Action
+            </th>
           </tr>
         </thead>
         <tbody>
           {products?.map((product, i) => (
             <Row
+              custom_cols={custom_cols}
               key={i}
               product={product}
               index={i}

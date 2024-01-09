@@ -9,7 +9,14 @@ import { ShopContext } from "@/context";
 import { useCategories, useCurrency, useProducts } from "@/hooks";
 
 // component import
-import { CatDrop, CustomTable, Loader, ProductChangeModal } from "@/components";
+import {
+  CatDrop,
+  CustomColumnAdd,
+  CustomTable,
+  Loader,
+  Modal,
+  ProductChange,
+} from "@/components";
 
 // icon import
 import { CiSearch } from "react-icons/ci";
@@ -27,6 +34,8 @@ import { AiOutlineReload } from "react-icons/ai";
 import { columns } from "@/assets/data";
 import toast from "react-hot-toast";
 import { woo_api } from "@/config";
+import { doc, updateDoc } from "firebase/firestore";
+import { firestore } from "@/firebase.init";
 
 function ShopPage() {
   const [openFilterBox, setOpenFilterBox] = useState({
@@ -36,6 +45,7 @@ function ShopPage() {
   });
 
   const [selectedCols, setSelectedCols] = useState(columns);
+  const [custom_cols, setCustom_cols] = useState([]);
 
   //   filter state
 
@@ -53,6 +63,7 @@ function ShopPage() {
   // product add state
 
   const [openAddModal, setOpenAddModal] = useState(false);
+  const [openColAddModal, setOpenColAddModal] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
 
   const params = useParams();
@@ -66,6 +77,13 @@ function ShopPage() {
         (shop) => shop?.id === parseInt(params?.id)
       );
       setShop(current_shop);
+    } else {
+      const cols = columns.filter((col) => shop?.cols?.includes(col.Header));
+      setSelectedCols(cols);
+
+      if (shop?.custom_cols) {
+        setCustom_cols(shop?.custom_cols);
+      }
     }
   }, [shop, params, shops]);
 
@@ -80,6 +98,16 @@ function ShopPage() {
     setPerPage,
   } = useProducts(shop, search, "", `${selectedCat?.id || ""}`, featured);
   const { currency, loading: currencyLoading } = useCurrency(shop);
+
+  useEffect(() => {
+    if (shop) {
+      const cols = selectedCols?.map((col) => col.Header);
+
+      const docRef = doc(firestore, "sites", shop?.doc_id);
+
+      updateDoc(docRef, { ...shop, cols });
+    }
+  }, [selectedCols]);
 
   const handleCheckboxChange = (item) => {
     if (selectedCols.includes(item)) {
@@ -138,6 +166,18 @@ function ShopPage() {
     document.body.style.overflow = "";
     window.scrollTo(0, scrollPosition);
     setOpenAddModal(false);
+  };
+
+  const openColModal = () => {
+    setScrollPosition(window.pageYOffset);
+    document.body.style.overflow = "hidden";
+    setOpenColAddModal(true);
+  };
+
+  const closeColModal = () => {
+    document.body.style.overflow = "";
+    window.scrollTo(0, scrollPosition);
+    setOpenColAddModal(false);
   };
 
   return (
@@ -248,8 +288,18 @@ function ShopPage() {
               </div>
               {openFilterBox.column && (
                 <div className="absolute p-2 bg-white w-full z-10 rounded-md flex flex-col gap-2 shadow-md border-[1.5px] border-black/[0.07] max-h-[300px] overflow-auto dropdown">
+                  <button
+                    onClick={openColModal}
+                    className="flex justify-center items-center gap-2 w-full h-[45px] rounded border-[1.5px] border-primary bg-primary/[0.08] text-primary py-1"
+                  >
+                    <HiPlusSm />
+                    <p className="text-[14px] font-semibold text-primary">
+                      Custom Column
+                    </p>
+                  </button>
+
                   {columns.map((item, i) => (
-                    <div key={item} className="flex items-center gap-2">
+                    <div key={i} className="flex items-center gap-2">
                       <input
                         checked={selectedCols?.includes(item)}
                         onChange={() => handleCheckboxChange(item)}
@@ -260,6 +310,22 @@ function ShopPage() {
                         type="checkbox"
                       />
                       <p className="text-black/[0.54]">{item.Header}</p>
+                    </div>
+                  ))}
+
+                  <p className="text-center text-black/[0.54] text-sm font-semibold after:w-1/5 after:ml-1 before:mr-1 before:w-1/5 after:h-[1px] before:h-[1px] after:bg-black/[0.54] before:bg-black/[0.54] after:inline-block before:inline-block">
+                    Custom Field
+                  </p>
+
+                  {custom_cols?.map((item, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <input
+                        checked
+                        onChange={() => toast.error("Can't hide custom colum")}
+                        className="w-[20px] h-[20px] cursor-pointer"
+                        type="checkbox"
+                      />
+                      <p className="text-black/[0.54]">{item?.col_name}</p>
                     </div>
                   ))}
                 </div>
@@ -316,6 +382,7 @@ function ShopPage() {
         <CustomTable
           products={products}
           columns={selectedCols}
+          custom_cols={custom_cols}
           setEditedProducts={setEditedProducts}
           updatedItems={updatedItems}
           setUpdatedItems={setUpdatedItems}
@@ -388,7 +455,14 @@ function ShopPage() {
         </div>
       </div>
       {openAddModal && (
-        <ProductChangeModal closeModal={closeModal} refetch={refetch} />
+        <Modal closeModal={closeModal}>
+          <ProductChange closeModal={closeModal} refetch={refetch} />
+        </Modal>
+      )}
+      {openColAddModal && (
+        <Modal closeModal={closeColModal} w="500px" h="200px">
+          <CustomColumnAdd closeModal={closeColModal} />
+        </Modal>
       )}
     </div>
   );
