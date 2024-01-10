@@ -23,8 +23,11 @@ function Auth({ children }) {
       {user ? (
         children
       ) : loading ? (
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex flex-col justify-center items-center h-screen">
           <Loader large />
+          <p className="text-sm text-black/[0.54] font-semibold">
+            Configuring your shop...
+          </p>
         </div>
       ) : (
         <div className="flex flex-col justify-center items-center h-screen">

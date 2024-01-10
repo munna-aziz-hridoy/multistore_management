@@ -253,7 +253,7 @@ function StepTwo({ platform }) {
               )}
             </div>
           </div>
-          <div className="flex justify-center items-center gap-5 my-6">
+          {/* <div className="flex justify-center items-center gap-5 my-6">
             <div className="w-1/2 h-[45px] rounded border border-[#B2BCCA] relative">
               <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
                 Business Type
@@ -326,7 +326,7 @@ function StepTwo({ platform }) {
                 </p>
               )}
             </div>
-          </div>
+          </div> */}
           <button
             type="submit"
             className="w-full bg-primary h-[45px] rounded-md text-white font-medium mt-6 hover:bg-primary/80 duration-100"

@@ -71,17 +71,20 @@ function Sidebar() {
         )}
       </div>
       <div className="mt-[35px] h-[calc(100%-110px)]">
-        <p className="text-[10px] text-white/[0.54] px-[25px] uppercase">
+        {/* <p className="text-[10px] text-white/[0.54] px-[25px] uppercase">
           {collapse ? "ge." : "general"}
         </p>
-        <div
-          className={`flex items-center gap-3 text-white/[0.54]  w-full h-[50px] ${
-            collapse ? "p-[15px]" : "p-[25px]"
-          }`}
-        >
-          <MdOutlineSpaceDashboard fontSize={collapse ? 26 : 22} />
-          {!collapse && delay && <p className="text-[15px]">Overview</p>}
-        </div>
+        <Link href="/">
+          <div
+            className={`flex items-center gap-3 text-white/[0.54]  w-full h-[50px] ${
+              collapse ? "p-[15px]" : "p-[25px]"
+            }`}
+          >
+            <MdOutlineSpaceDashboard fontSize={collapse ? 26 : 22} />
+            {!collapse && delay && <p className="text-[15px]">Overview</p>}
+          </div>
+        </Link> */}
+
         {loading ? (
           <div className="w-full py-5 flex justify-center items-center">
             <Loader />

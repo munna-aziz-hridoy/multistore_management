@@ -15,7 +15,6 @@ import { ShopContext } from "@/context";
 import { woo_api } from "@/config";
 import toast from "react-hot-toast";
 import { Loader, Modal, ProductChange, VariationTable } from "..";
-import { useCurrency } from "@/hooks";
 
 const Row = ({
   product,
