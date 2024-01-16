@@ -64,7 +64,12 @@ const CategorySelectItems = ({ category, selected, setSelected }) => {
       </div>
       {openCat && (
         <div className="ml-5 border-l border-b rounded-md border-gray-200">
-          <CategorySelect categories={categories} loading={loading} />
+          <CategorySelect
+            categories={categories}
+            loading={loading}
+            selected={selected}
+            setSelected={setSelected}
+          />
         </div>
       )}
     </>
@@ -587,14 +592,19 @@ function ProductChange({
           )}
 
           <div className="mt-10 flex items-center gap-4 h-[45px]">
-            <button className="flex items-center justify-center gap-1 w-[125px] h-full text-white bg-[#f74747] rounded-md">
-              <CgTrash /> <span>Delete</span>
-            </button>
+            {update && (
+              <button className="flex items-center justify-center gap-1 w-[125px] h-full text-white bg-[#f74747] rounded-md">
+                <CgTrash /> <span>Delete</span>
+              </button>
+            )}
             <button
               onClick={handleUpdateProduct}
-              className="flex items-center justify-center gap-1 w-[calc(100%-125px)] h-full text-white bg-primary rounded-md"
+              className="flex items-center justify-center gap-1 h-full text-white bg-primary rounded-md"
+              style={{
+                width: update ? "calc(100%-125px)" : "100%",
+              }}
             >
-              <span>Update</span>
+              <span>{update ? "Update" : "Add Product"}</span>
             </button>
           </div>
         </div>
