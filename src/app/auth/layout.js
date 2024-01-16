@@ -38,39 +38,44 @@ function Layout({ children }) {
 
   const handleGoogleSignIn = () => {
     setLoading(true);
-    signInWithGoogle().then((response) => {
-      console.log(response);
+    signInWithGoogle()
+      .then((response) => {
+        console.log(response);
 
-      if (response?.user) {
-        const userq = query(
-          collection(firestore, "users"),
-          where("email", "==", response?.user?.email)
-        );
+        if (response?.user) {
+          const userq = query(
+            collection(firestore, "users"),
+            where("email", "==", response?.user?.email)
+          );
 
-        getDocs(userq).then((snapshot) => {
-          if (snapshot.empty) {
-            addDoc(collection(firestore, "users"), {
-              first_name: response.user.displayName.split(" ")[0],
-              last_name: response.user.displayName.split(" ")[1],
-              email: response.user.email,
-            }).then((createdUser) => {
+          getDocs(userq).then((snapshot) => {
+            if (snapshot.empty) {
+              addDoc(collection(firestore, "users"), {
+                first_name: response.user.displayName.split(" ")[0],
+                last_name: response.user.displayName.split(" ")[1],
+                email: response.user.email,
+              }).then((createdUser) => {
+                setLoading(false);
+                toast.success("Sign up successfully!");
+                router.push("/");
+              });
+            } else {
               setLoading(false);
               toast.success("Sign up successfully!");
               router.push("/");
-            });
-          } else {
-            setLoading(false);
-            toast.success("Sign up successfully!");
-            router.push("/");
-          }
-        });
+            }
+          });
 
-        router.push("/");
-      } else {
-        toast.error("Something went wrong");
+          router.push("/");
+        } else {
+          toast.error("Something went wrong");
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
         setLoading(false);
-      }
-    });
+      });
   };
 
   return (
