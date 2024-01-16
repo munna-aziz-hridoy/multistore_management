@@ -40,8 +40,6 @@ function Layout({ children }) {
     setLoading(true);
     signInWithGoogle()
       .then((response) => {
-        console.log(response);
-
         if (response?.user) {
           const userq = query(
             collection(firestore, "users"),
@@ -73,7 +71,7 @@ function Layout({ children }) {
         }
       })
       .catch((err) => {
-        console.log(err);
+        toast.error("Something went wrong");
         setLoading(false);
       });
   };
