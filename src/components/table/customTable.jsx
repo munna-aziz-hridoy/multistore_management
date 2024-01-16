@@ -562,7 +562,7 @@ const Row = ({
       </tr>
       {product?.variations?.length > 0 && openVariations && (
         <tr className={`bg-primary ${openVariations && "shadow-xl"}`}>
-          <td colSpan={columns?.length}>
+          <td colSpan={columns?.length + 1}>
             <VariationTable id={product?.id} name={product?.name} pi={index} />
           </td>
         </tr>
