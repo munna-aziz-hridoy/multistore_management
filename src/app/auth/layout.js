@@ -39,10 +39,12 @@ function Layout({ children }) {
   const handleGoogleSignIn = () => {
     setLoading(true);
     signInWithGoogle().then((response) => {
-      if (response.user) {
+      console.log(response);
+
+      if (response?.user) {
         const userq = query(
           collection(firestore, "users"),
-          where("email", "==", response.user.email)
+          where("email", "==", response?.user?.email)
         );
 
         getDocs(userq).then((snapshot) => {
@@ -119,10 +121,6 @@ function Layout({ children }) {
                 </p>
               )}
             </button>
-            {/* <button className="w-full h-[45px] border-2 border-black/10 rounded-xl flex justify-center items-center gap-4 text-black/[0.84] font-semibold">
-              <BsFacebook fontSize={28} color="#1977F3" />
-              Sign in with Facebook
-            </button> */}
           </div>
         </div>
         <p className="text-black/[0.38] text-xs">
