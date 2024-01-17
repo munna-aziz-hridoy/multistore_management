@@ -601,7 +601,7 @@ function ProductChange({
               onClick={handleUpdateProduct}
               className="flex items-center justify-center gap-1 h-full text-white bg-primary rounded-md"
               style={{
-                width: update ? "calc(100%-125px)" : "100%",
+                width: update ? "calc(100% - 125px)" : "100%",
               }}
             >
               <span>{update ? "Update" : "Add Product"}</span>
