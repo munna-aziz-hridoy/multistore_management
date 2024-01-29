@@ -42,6 +42,7 @@ function ShopPage() {
     feature: false,
     column: false,
     categories: false,
+    stock: false,
   });
 
   const [selectedCols, setSelectedCols] = useState(columns);
@@ -51,6 +52,7 @@ function ShopPage() {
 
   const [featured, setFeatured] = useState(null);
   const [search, setSearch] = useState("");
+  const [stock_status, setStock_status] = useState("");
   const [selectedCat, setSelectedCat] = useState(null);
   const [showDrop, setShowDrop] = useState(false);
 
@@ -100,7 +102,14 @@ function ShopPage() {
     loading,
     perPage,
     setPerPage,
-  } = useProducts(shop, search, "", `${selectedCat?.id || ""}`, featured);
+  } = useProducts(
+    shop,
+    search,
+    "",
+    `${selectedCat?.id || ""}`,
+    featured,
+    stock_status
+  );
   const { currency, loading: currencyLoading } = useCurrency(shop);
 
   useEffect(() => {
@@ -126,6 +135,27 @@ function ShopPage() {
   const handleBatchUpdate = () => {
     if (editedProducts?.length === 0)
       return toast.error("Please select at least one product to update");
+
+    let error = false;
+
+    editedProducts.forEach((product) => {
+      const reg_price = product.regular_price;
+      const sale_price = product.sale_price;
+
+      if (
+        reg_price &&
+        sale_price &&
+        parseFloat(reg_price) < parseFloat(sale_price)
+      ) {
+        error = true;
+        return;
+      }
+    });
+
+    if (error) {
+      toast.error("Regular price cannot be less than sale price");
+      return;
+    }
 
     setUpdating(true);
     woo_api(shop)
@@ -154,6 +184,7 @@ function ShopPage() {
     setSearch("");
     setSelectedCat(null);
     setFeatured(null);
+    setStock_status("");
 
     setTimeout(() => {
       refetch();
@@ -188,7 +219,7 @@ function ShopPage() {
     <div>
       <div className="flex justify-between items-center mb-5">
         <div>
-          <h2 className="text-3xl font-bold text-black/[0.84] capitalize flex items-center gap-2">
+          <h2 className="text-xl font-bold text-black/[0.84] capitalize flex items-center gap-2">
             {shop?.shop_name}{" "}
             <AiOutlineReload
               className="text-primary cursor-pointer"
@@ -199,26 +230,26 @@ function ShopPage() {
         <div className="flex items-center justify-end gap-2">
           <button
             onClick={openModal}
-            className="flex justify-center items-center gap-2 w-[170px] h-[45px] rounded-md border-[1.5px] border-primary bg-primary/[0.08] text-primary"
+            className="flex justify-center items-center gap-2 w-[160px] h-[40px] rounded-md border-[1.5px] border-primary bg-primary/[0.08] text-primary"
           >
             <HiPlusSm />
-            <p className="text-[14px] font-semibold text-primary">
+            <p className="text-[12px] font-semibold text-primary">
               Add Product
             </p>
           </button>
           <button
             disabled={editedProducts?.length === 0 ? true : false}
             onClick={handleBatchUpdate}
-            className="flex justify-center items-center gap-2 w-[170px] h-[45px] rounded-md border-[1.5px] border-primary bg-primary disabled:bg-gray-400 disabled:border-gray-400"
+            className="flex justify-center items-center gap-2 w-[160px] h-[40px] rounded-md border-[1.5px] border-primary bg-primary disabled:bg-gray-400 disabled:border-gray-400"
           >
-            <p className="text-[14px] font-semibold text-white">Update</p>
+            <p className="text-[12px] font-semibold text-white">Update</p>
           </button>
         </div>
       </div>
 
-      <div className="h-[86px] w-full bg-[#f7f7f7] rounded-t-lg">
+      <div className="h-[80px] w-full bg-[#f7f7f7] rounded-t-lg">
         <div className="flex justify-between items-center h-full px-5">
-          <div className="min-w-[300px] h-[45px] border-[1.5px] border-black/[0.07] rounded-md bg-white flex items-center gap-1 px-4">
+          <div className="min-w-[300px] h-[40px] border-[1.5px] border-black/[0.07] rounded-md bg-white flex items-center gap-1 px-4">
             <p onClick={() => refetch()} className="w-[30px]">
               <CiSearch />
             </p>
@@ -232,7 +263,7 @@ function ShopPage() {
               onChange={(e) => {
                 setSearch(e.target.value);
               }}
-              className="h-full w-[calc(100%-30px)]"
+              className="h-full w-[calc(100%-30px)] text-sm"
               placeholder="Search Products"
             />
           </div>
@@ -245,9 +276,9 @@ function ShopPage() {
                     categories: !prev.categories,
                   }))
                 }
-                className="min-w-[250px] h-[45px] rounded-md border-[1.5px] border-black/[0.07] bg-white flex justify-between items-center gap-1 px-4 text-black/[0.54] cursor-pointer"
+                className="min-w-[180px] h-[40px] rounded-md border-[1.5px] border-black/[0.07] bg-white flex justify-between items-center gap-1 px-4 text-black/[0.54] cursor-pointer"
               >
-                <p className="flex items-center gap-1">
+                <p className="flex items-center gap-1 text-sm">
                   <MdOutlineCategory />
                   {selectedCat?.name || "Categories"}
                 </p>
@@ -280,9 +311,9 @@ function ShopPage() {
                     column: !prev.column,
                   }))
                 }
-                className="min-w-[250px] h-[45px] rounded-md border-[1.5px] border-black/[0.07] bg-white flex justify-between items-center gap-1 px-4 text-black/[0.54] cursor-pointer"
+                className="min-w-[180px] h-[40px] rounded-md border-[1.5px] border-black/[0.07] bg-white flex justify-between items-center gap-1 px-4 text-black/[0.54] cursor-pointer"
               >
-                <p className="flex items-center gap-1">
+                <p className="flex items-center gap-1 text-sm">
                   <HiBars3 className="rotate-90" />
                   Column
                 </p>
@@ -297,7 +328,7 @@ function ShopPage() {
                     className="flex justify-center items-center gap-2 w-full h-[45px] rounded border-[1.5px] border-primary bg-primary/[0.08] text-primary py-1"
                   >
                     <HiPlusSm />
-                    <p className="text-[14px] font-semibold text-primary">
+                    <p className="text-[12px] font-semibold text-primary">
                       Custom Column
                     </p>
                   </button>
@@ -313,11 +344,11 @@ function ShopPage() {
                         value={item}
                         type="checkbox"
                       />
-                      <p className="text-black/[0.54]">{item.Header}</p>
+                      <p className="text-black/[0.54] text-sm">{item.Header}</p>
                     </div>
                   ))}
 
-                  <p className="text-center text-black/[0.54] text-sm font-semibold after:w-1/5 after:ml-1 before:mr-1 before:w-1/5 after:h-[1px] before:h-[1px] after:bg-black/[0.54] before:bg-black/[0.54] after:inline-block before:inline-block">
+                  <p className="text-center text-black/[0.54] text-xs font-semibold after:w-1/5 after:ml-1 before:mr-1 before:w-1/5 after:h-[1px] before:h-[1px] after:bg-black/[0.54] before:bg-black/[0.54] after:inline-block before:inline-block ">
                     Custom Field
                   </p>
 
@@ -329,7 +360,9 @@ function ShopPage() {
                         className="w-[20px] h-[20px] cursor-pointer"
                         type="checkbox"
                       />
-                      <p className="text-black/[0.54]">{item?.col_name}</p>
+                      <p className="text-black/[0.54] text-sm">
+                        {item?.col_name}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -343,9 +376,9 @@ function ShopPage() {
                     feature: !prev.feature,
                   }))
                 }
-                className="min-w-[220px] h-[45px] rounded-md border-[1.5px] border-black/[0.07] bg-white flex justify-between items-center gap-1 px-4 text-black/[0.54] cursor-pointer"
+                className="min-w-[180px] h-[40px] rounded-md border-[1.5px] border-black/[0.07] bg-white flex justify-between items-center gap-1 px-4 text-black/[0.54] cursor-pointer"
               >
-                <p className="flex items-center gap-1">
+                <p className="flex items-center gap-1 text-sm">
                   {featured ? "Featured Product" : "All Products"}
                 </p>
                 <p>
@@ -353,7 +386,7 @@ function ShopPage() {
                 </p>
               </div>
               {openFilterBox.feature && (
-                <div className="absolute p-2 bg-white w-full z-10 rounded-md flex flex-col gap-2 shadow-md border-[1.5px] border-black/[0.07] max-h-[300px] overflow-auto dropdown">
+                <div className="absolute p-2 bg-white w-full z-10 rounded-md flex flex-col gap-2 shadow-md border-[1.5px] border-black/[0.07] max-h-[300px] overflow-auto dropdown ">
                   <div
                     onClick={() => {
                       setFeatured(null);
@@ -361,7 +394,7 @@ function ShopPage() {
                     }}
                     className="flex items-center gap-2 cursor-pointer"
                   >
-                    <p className="text-black/[0.54]">All Products</p>
+                    <p className="text-black/[0.54] text-sm">All Products</p>
                   </div>
                   <div
                     onClick={() => {
@@ -370,7 +403,50 @@ function ShopPage() {
                     }}
                     className="flex items-center gap-2 cursor-pointer"
                   >
-                    <p className="text-black/[0.54]">Featured Products</p>
+                    <p className="text-black/[0.54] text-sm">
+                      Featured Products
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="relative">
+              <div
+                onClick={() =>
+                  setOpenFilterBox((prev) => ({
+                    ...prev,
+                    stock: !prev.stock,
+                  }))
+                }
+                className="min-w-[180px] h-[40px] rounded-md border-[1.5px] border-black/[0.07] bg-white flex justify-between items-center gap-1 px-4 text-black/[0.54] cursor-pointer"
+              >
+                <p className="flex items-center gap-1 text-sm capitalize">
+                  {stock_status || "Stock Status"}
+                </p>
+                <p>
+                  <MdOutlineKeyboardArrowDown />
+                </p>
+              </div>
+              {openFilterBox.stock && (
+                <div className="absolute p-2 bg-white w-full z-10 rounded-md flex flex-col gap-2 shadow-md border-[1.5px] border-black/[0.07] max-h-[300px] overflow-auto dropdown ">
+                  <div
+                    onClick={() => {
+                      setStock_status("instock");
+                      setOpenFilterBox((prev) => ({ ...prev, stock: false }));
+                    }}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <p className="text-black/[0.54] text-sm">In stock</p>
+                  </div>
+                  <div
+                    onClick={() => {
+                      setStock_status("outofstock");
+                      setOpenFilterBox((prev) => ({ ...prev, stock: false }));
+                    }}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <p className="text-black/[0.54] text-sm">Out of stock</p>
                   </div>
                 </div>
               )}
@@ -392,16 +468,18 @@ function ShopPage() {
           setUpdatedItems={setUpdatedItems}
           refetch={refetch}
           currency={currency}
+          page={page}
+          perPage={perPage}
         />
       )}
       <div className="flex justify-between items-center mb-3 mt-5">
         <div className="flex items-center gap-2">
-          <p className="font-semibold text-black/[0.54] text-sm">
+          <p className="font-semibold text-black/[0.54] text-xs">
             Row per page
           </p>{" "}
           <p
             onClick={() => setShowDrop((prev) => !prev)}
-            className="relative px-4 border border-gray-200 rounded-md flex items-center gap-1 cursor-pointer text-black/[0.84 text-sm]"
+            className="relative px-4 border border-gray-200 rounded-md flex items-center gap-1 cursor-pointer text-black/[0.84] text-xs"
           >
             {perPage} <IoMdArrowDropdown />
             {showDrop && (
@@ -426,13 +504,13 @@ function ShopPage() {
           </p>
         </div>
         <div className="flex items-center gap-5">
-          <p className="flex gap-2 text-black/[0.54] text-sm font-semibold">
+          <p className="flex gap-2 text-black/[0.54] text-xs font-semibold">
             <span>Page: {page}</span> <span> of </span>{" "}
             <span>{total_page}</span>
           </p>
           <p className="flex items-center gap-[6px] text-black/[0.54]">
             <IoIosArrowBack
-              className="cursor-pointer"
+              className="cursor-pointer text-base"
               onClick={() =>
                 setPage((prev) => {
                   if (prev === 1) {
@@ -444,7 +522,7 @@ function ShopPage() {
               }
             />
             <IoIosArrowForward
-              className="cursor-pointer"
+              className="cursor-pointer text-base"
               onClick={() =>
                 setPage((prev) => {
                   if (prev === total_page) {

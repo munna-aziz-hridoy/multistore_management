@@ -15,6 +15,7 @@ import { ShopContext } from "@/context";
 import { woo_api } from "@/config";
 import toast from "react-hot-toast";
 import { Loader, Modal, ProductChange, VariationTable } from "..";
+import { convertToLocalDate } from "@/utils";
 
 const Row = ({
   product,
@@ -26,6 +27,8 @@ const Row = ({
   refetch,
   currency,
   custom_cols,
+  page,
+  perPage,
 }) => {
   // context
 
@@ -92,6 +95,20 @@ const Row = ({
     e.preventDefault();
 
     setUpdating(true);
+
+    const reg_price = currentProduct.regular_price;
+    const sale_price = currentProduct.sale_price;
+
+    if (
+      reg_price &&
+      sale_price &&
+      parseFloat(reg_price) < parseFloat(sale_price)
+    ) {
+      toast.error("Regular price cannot be less than sale price");
+      setUpdating(false);
+      return;
+    }
+
     woo_api(shop)
       .put(`products/${product?.id}`, currentProduct)
       .then((response) => {
@@ -178,6 +195,8 @@ const Row = ({
     setIsModalOpen(false);
   };
 
+  console.log(product?.date_modified);
+
   return (
     <>
       <tr
@@ -203,8 +222,8 @@ const Row = ({
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] text-black/[0.54]"
               >
-                <div className="flex justify-start items-center gap-1 cursor-pointer px-2">
-                  <p>{index + 1}</p>
+                <div className="flex justify-start items-center gap-1 cursor-pointer px-2 text-sm">
+                  <p>{page * perPage - perPage + (index + 1)}</p>
                   {product?.variations?.length > 0 && (
                     <IoMdArrowDropright
                       className={`${
@@ -220,7 +239,7 @@ const Row = ({
             {isExists("Image") && (
               <td align="center" className="border-[1.5px] border-[#f2f2f2]">
                 <img
-                  className="w-[60px] h-[60px]"
+                  className="w-[45px] h-[45px]"
                   src={product?.images[0]?.src}
                   alt="image"
                 />
@@ -231,45 +250,23 @@ const Row = ({
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
               >
-                <div className="flex flex-col gap-[2px] justify-start items-start">
-                  <p className="text-[14px] text-left font-semibold text-black/[0.84]">
+                <div className="flex flex-col gap-[1px] justify-start items-start">
+                  <p className="text-[12px] text-left font-semibold text-black/[0.84]">
                     {currentProduct?.name}
                   </p>
-                  <p className="text-[10px] font-normal text-black/[0.54]">
+                  <p className="text-[9px] font-normal text-black/[0.54]">
                     SKU: {currentProduct?.sku || "N/A"}
+                  </p>
+                  <p className="text-[9px] font-medium text-primary">
+                    Last modified:{" "}
+                    {convertToLocalDate(product?.date_modified)
+                      .split(",")[0]
+                      .replaceAll("/", "-")}
                   </p>
                 </div>
               </td>
             )}
-            {isExists("Price") && (
-              <td
-                align="center"
-                className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
-              >
-                <div
-                  onClick={variationWarning}
-                  className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center"
-                >
-                  <span
-                    className="inline-block w-2"
-                    dangerouslySetInnerHTML={{ __html: currency?.symbol }}
-                  />
-                  <input
-                    type="text"
-                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
-                    value={currentProduct?.price}
-                    onChange={(e) => {
-                      setIs_update(true);
-                      setCurrentProduct((prev) => ({
-                        ...prev,
-                        price: e.target.value,
-                      }));
-                    }}
-                    disabled={product?.variations?.length > 0 ? true : false}
-                  />
-                </div>
-              </td>
-            )}
+
             {isExists("Regular Price") && (
               <td
                 align="center"
@@ -277,7 +274,7 @@ const Row = ({
               >
                 <div
                   onClick={variationWarning}
-                  className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center"
+                  className="w-full h-[35px] bg-[#f7f7f7] rounded px-2 flex items-center"
                 >
                   <span
                     className="inline-block w-2"
@@ -285,7 +282,7 @@ const Row = ({
                   />
                   <input
                     type="text"
-                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
+                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54] text-[12px]"
                     value={currentProduct?.regular_price}
                     onChange={(e) => {
                       setIs_update(true);
@@ -299,6 +296,38 @@ const Row = ({
                 </div>
               </td>
             )}
+
+            {isExists("Sale Price") && (
+              <td
+                align="center"
+                className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
+              >
+                <div
+                  onClick={variationWarning}
+                  className="w-full h-[35px] bg-[#f7f7f7] rounded px-2 flex items-center"
+                >
+                  <span
+                    className="inline-block w-2"
+                    dangerouslySetInnerHTML={{ __html: currency?.symbol }}
+                  />
+                  <input
+                    type="text"
+                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54] text-[12px]"
+                    value={currentProduct?.sale_price}
+                    defaultValue={currentProduct.sale_price || ""}
+                    onChange={(e) => {
+                      setIs_update(true);
+                      setCurrentProduct((prev) => ({
+                        ...prev,
+                        sale_price: e.target.value,
+                      }));
+                    }}
+                    disabled={product?.variations?.length > 0 ? true : false}
+                  />
+                </div>
+              </td>
+            )}
+
             {isExists("Stock") && (
               <td
                 align="center"
@@ -323,7 +352,7 @@ const Row = ({
                       currentProduct?.stock_status === "instock"
                         ? "text-[#25af55] disabled:text-[#25af55]/70 bg-[#25AF55]/20 disabled:bg-[#25AF55]/5 outline-[#25AF55]/20 disabled:outline-[#25AF55]/5"
                         : "text-[#f00] disabled:text-[#f00]/70 bg-[#f00]/20 disabled:bg-[#f00]/5 outline-[#f00]/20 disabled:outline-[#f00]/5"
-                    }   font-medium rounded text-sm px-4 py-2 outline  cursor-pointer `}
+                    }   font-medium rounded text-sm px-4 py-2 text-[12px] outline  cursor-pointer `}
                   >
                     <option value={"instock"}>In Stock</option>
                     <option value={"outofstock"}>Out of Stock</option>
@@ -360,7 +389,7 @@ const Row = ({
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
               >
-                <div className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center">
+                <div className="w-full h-[35px] bg-[#f7f7f7] rounded px-2 flex items-center">
                   <input
                     value={currentProduct?.stock_quantity}
                     onChange={(e) => {
@@ -371,7 +400,7 @@ const Row = ({
                       }));
                     }}
                     type="text"
-                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent "
+                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent text-[12px]"
                   />
                 </div>
               </td>
@@ -401,42 +430,13 @@ const Row = ({
                 </label>
               </td>
             )}
-            {isExists("Sale Price") && (
-              <td
-                align="center"
-                className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
-              >
-                <div
-                  onClick={variationWarning}
-                  className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center"
-                >
-                  <span
-                    className="inline-block w-2"
-                    dangerouslySetInnerHTML={{ __html: currency?.symbol }}
-                  />
-                  <input
-                    type="text"
-                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
-                    value={currentProduct?.sale_price}
-                    defaultValue={currentProduct.sale_price || ""}
-                    onChange={(e) => {
-                      setIs_update(true);
-                      setCurrentProduct((prev) => ({
-                        ...prev,
-                        sale_price: e.target.value,
-                      }));
-                    }}
-                    disabled={product?.variations?.length > 0 ? true : false}
-                  />
-                </div>
-              </td>
-            )}
+
             {isExists("Total Sale") && (
               <td
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
               >
-                <p className="text-[14px] text-black/[0.84] ">
+                <p className="text-[12px] text-black/[0.84] ">
                   {product?.total_sales}
                 </p>
               </td>
@@ -446,7 +446,7 @@ const Row = ({
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
               >
-                <p className="text-[12px] text-black/[0.84] text-left">
+                <p className="text-[10px] text-black/[0.84] text-left">
                   {product?.categories?.length > 0
                     ? product?.categories?.map((category, i) => (
                         <span>
@@ -591,6 +591,8 @@ function CustomTable({
   refetch,
   currency,
   custom_cols,
+  page,
+  perPage,
 }) {
   return (
     <div className="overflow-x-auto">
@@ -599,7 +601,7 @@ function CustomTable({
           <tr className="bg-[#F7F7F7]">
             {columns?.map((col) => (
               <th
-                className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[14px] p-[10px]"
+                className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]"
                 style={{
                   width: col.width,
                 }}
@@ -610,7 +612,7 @@ function CustomTable({
             {custom_cols?.length > 0 &&
               custom_cols?.map((col) => (
                 <th
-                  className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[14px] p-[10px] capitalize"
+                  className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px] capitalize"
                   style={{
                     width: 200,
                   }}
@@ -619,7 +621,7 @@ function CustomTable({
                 </th>
               ))}
             <th
-              className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[14px] p-[10px]"
+              className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]"
               style={{
                 width: 150,
               }}
@@ -641,6 +643,8 @@ function CustomTable({
               setUpdatedItems={setUpdatedItems}
               refetch={refetch}
               currency={currency}
+              page={page}
+              perPage={perPage}
             />
           ))}
         </tbody>

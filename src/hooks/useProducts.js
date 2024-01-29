@@ -6,7 +6,8 @@ const useProducts = (
   search = "",
   barcode = "",
   category = "",
-  featured = null
+  featured = null,
+  stock_status = ""
 ) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -47,6 +48,11 @@ const useProducts = (
         sku: barcode || "",
         featured: featured,
       };
+
+      if (stock_status) {
+        options.stock_status = stock_status;
+      }
+
       let endpoint = "products";
 
       setLoading(true);
@@ -74,7 +80,7 @@ const useProducts = (
 
   useEffect(() => {
     fetchProducts();
-  }, [page, featured, category, shop, perPage]);
+  }, [page, featured, category, shop, perPage, stock_status]);
 
   return {
     products,
