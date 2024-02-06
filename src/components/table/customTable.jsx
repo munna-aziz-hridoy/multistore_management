@@ -195,8 +195,6 @@ const Row = ({
     setIsModalOpen(false);
   };
 
-  console.log(product?.date_modified);
-
   return (
     <>
       <tr

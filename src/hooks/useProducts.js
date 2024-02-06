@@ -1,4 +1,4 @@
-import { shopify_api, woo_api } from "@/config";
+import { woo_api } from "@/config";
 import { useState, useEffect } from "react";
 
 const useProducts = (

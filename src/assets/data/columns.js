@@ -85,3 +85,70 @@ export const columns = [
     active: true,
   },
 ];
+
+export const orderCols = [
+  {
+    id: 1,
+    Header: "SL",
+    accessor: "sl",
+    width: 45,
+    active: true,
+  },
+  {
+    id: 2,
+    Header: "Order number",
+    accessor: "order_number",
+    width: 180,
+    active: true,
+  },
+  {
+    id: 3,
+    Header: "Total Items",
+    accessor: "total_items",
+    width: 100,
+    active: true,
+  },
+
+  {
+    id: 4,
+    Header: "Total Amount",
+    accessor: "total_amount",
+    width: 100,
+    active: true,
+  },
+  {
+    id: 5,
+    Header: "Date",
+    accessor: "date",
+    width: 150,
+    active: true,
+  },
+  {
+    id: 6,
+    Header: "Billing Name",
+    accessor: "billing_name",
+    width: 180,
+    active: true,
+  },
+  {
+    id: 7,
+    Header: "Shipping Name",
+    accessor: "shipping_name",
+    width: 180,
+    active: true,
+  },
+  {
+    id: 8,
+    Header: "Payment Method",
+    accessor: "payment_method",
+    width: 140,
+    active: true,
+  },
+  {
+    id: 9,
+    Header: "Status",
+    accessor: "status",
+    width: 130,
+    active: true,
+  },
+];

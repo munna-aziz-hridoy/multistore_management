@@ -15,6 +15,8 @@ import RichEditor from "./common/editor";
 import CatDrop from "./common/cat_drop";
 import Modal from "./common/modal";
 import CustomColumnAdd from "./customColumnAdd";
+import ProductTable from "./product_table";
+import OrderTable from "./order_table";
 
 export {
   Imgs as Image,
@@ -34,4 +36,6 @@ export {
   CatDrop,
   Modal,
   CustomColumnAdd,
+  ProductTable,
+  OrderTable,
 };
