@@ -51,9 +51,7 @@ function ShopPage() {
         </h2>
       </div>
 
-      <ProductTable />
-
-      {/* <div className="flex gap-2 items-center mt-3">
+      <div className="flex gap-2 items-center mt-3">
         <button
           onClick={() => handleSetActive("products")}
           className={`px-4 py-1  border border-primary rounded ${
@@ -76,7 +74,7 @@ function ShopPage() {
         </button>
       </div>
       {activeTab === "products" && <ProductTable />}
-      {activeTab === "orders" && <OrderTable />} */}
+      {activeTab === "orders" && <OrderTable />}
     </div>
   );
 }
