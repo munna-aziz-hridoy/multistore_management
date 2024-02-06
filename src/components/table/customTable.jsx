@@ -54,6 +54,8 @@ const Row = ({
 
   const [openVariations, setOpenVariations] = useState(false);
 
+  const [inputBig, setInputBig] = useState("");
+
   useEffect(() => {
     setCurrentProduct({
       price: `${product?.price}`,
@@ -272,7 +274,7 @@ const Row = ({
               >
                 <div
                   onClick={variationWarning}
-                  className="w-full h-[35px] bg-[#f7f7f7] rounded px-2 flex items-center"
+                  className="w-full h-[35px] bg-[#f7f7f7] rounded px-2 flex items-center relative"
                 >
                   <span
                     className="inline-block w-2"
@@ -467,16 +469,29 @@ const Row = ({
                   align="center"
                   className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
                 >
-                  <div className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center">
+                  <div className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center relative">
                     {col?.meta_key?.includes("price") && (
                       <span
                         className="inline-block w-2"
                         dangerouslySetInnerHTML={{ __html: currency?.symbol }}
                       />
                     )}
+                    {inputBig === col?.meta_key && (
+                      <button
+                        onClick={() => setInputBig("")}
+                        className="absolute -top-3 -right-3 bg-red-500 w-5 h-5 flex justify-center items-center z-[99] rounded-full text-white"
+                      >
+                        <BsX />
+                      </button>
+                    )}
                     <input
+                      onDoubleClick={() => setInputBig(col?.meta_key)}
                       type="text"
-                      className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
+                      className={`text-black/[0.84]  h-full disabled:text-black/[0.54] ${
+                        inputBig === col?.meta_key
+                          ? "absolute w-96 h-full right-0 shadow-lg bg-[#f7f7f7] px-2 z-50 border border-gray-300 rounded"
+                          : "px-1 w-[calc(100%-8px)] bg-transparent"
+                      }`}
                       value={
                         currentProduct?.meta_data?.find(
                           (meta) => meta?.key === col?.meta_key
