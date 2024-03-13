@@ -56,3 +56,18 @@ svg {
 .tox-statusbar {
   display: none !important;
 }
+
+.resizer {
+  cursor: grab;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.resizer::-webkit-resizer {
+  border-left: 4px solid black;
+  background: transparent;
+  box-shadow: 0 0 5px 5px rgba(0, 0, 255, 0.1);
+  outline: none;
+  cursor: grab;
+}

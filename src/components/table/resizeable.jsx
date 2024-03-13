@@ -81,7 +81,7 @@ function ResizableTable({}) {
     );
 
   return (
-    <Styles>
+    <>
       <div {...getTableProps()} className="table">
         <div>
           {headerGroups.map((headerGroup) => (
@@ -118,7 +118,7 @@ function ResizableTable({}) {
           })}
         </div>
       </div>
-    </Styles>
+    </>
   );
 }
 

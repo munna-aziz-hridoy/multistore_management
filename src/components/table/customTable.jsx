@@ -16,6 +16,7 @@ import { woo_api } from "@/config";
 import toast from "react-hot-toast";
 import { Loader, Modal, ProductChange, VariationTable } from "..";
 import { convertToLocalDate } from "@/utils";
+import ResizableTable from "./resizeable";
 
 const Row = ({
   product,
@@ -619,7 +620,27 @@ function CustomTable({
                   width: col.width,
                 }}
               >
-                {col.Header}
+                <div className="flex justify-center items-center gap-2">
+                  <p className="w-full"> {col.Header}</p>
+                  <textarea
+                    className="resizer"
+                    style={{
+                      resize: "horizontal",
+                      height: "10px",
+                      width: "20px",
+                      border: "none",
+                      borderLeft: "1px solid #f2f2f2",
+                      padding: "5px",
+                      caretColor: "transparent",
+                      caret: "ActiveBorder",
+                      // opacity: 0,
+                    }}
+                    name=""
+                    id=""
+                    cols="30"
+                    rows="10"
+                  ></textarea>
+                </div>
               </th>
             ))}
             {custom_cols?.length > 0 &&
