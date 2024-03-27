@@ -318,18 +318,12 @@ function ProductTable() {
               </div>
               {openFilterBox.categories && (
                 <div className="absolute p-2 bg-white w-full z-10 rounded-md flex flex-col gap-2 shadow-md border-[1.5px] border-black/[0.07]  max-h-[300px] overflow-y-auto dropdown overflow-x-hidden">
-                  {catLoading ? (
-                    <div className="flex justify-center items-center w-full">
-                      <Loader />
-                    </div>
-                  ) : (
-                    <CatDrop
-                      categories={categories}
-                      selectedCat={selectedCat}
-                      setSelectedCat={setSelectedCat}
-                      setOpenFilterBox={setOpenFilterBox}
-                    />
-                  )}
+                  <CatDrop
+                    categories={categories}
+                    selectedCat={selectedCat}
+                    setSelectedCat={setSelectedCat}
+                    setOpenFilterBox={setOpenFilterBox}
+                  />
                 </div>
               )}
             </div>

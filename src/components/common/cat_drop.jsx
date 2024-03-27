@@ -15,9 +15,6 @@ const CatItem = ({
 }) => {
   const [openList, setOpenList] = useState(false);
 
-  const { shop } = useContext(ShopContext);
-  const { categories, loading } = useCategories(shop, item?.id);
-
   return (
     <div>
       <div class="flex items-center py-1">
@@ -45,27 +42,27 @@ const CatItem = ({
           class="ms-2 font-medium text-gray-700 flex justify-between items-center w-full"
         >
           {item?.name}
-          {loading ? (
-            <Loader small />
-          ) : (
-            categories?.length > 0 && (
-              <span
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setOpenList((prev) => !prev);
-                }}
-                className="cursor-pointer"
-              >
-                <MdOutlineKeyboardArrowRight className="text-gray-400" />
-              </span>
-            )
-          )}
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenList((prev) => !prev);
+            }}
+            className="cursor-pointer"
+          >
+            <MdOutlineKeyboardArrowRight
+              className={`text-gray-400 duration-200 ${
+                openList && "rotate-90"
+              }`}
+            />
+          </button>
         </label>
       </div>
       <div className="ml-4 border-l border-gray-200 px-1">
         {openList && (
           <CatDrop
-            categories={categories}
+            category_id={item?.id}
+            setOpenFilterBox={setOpenFilterBox}
             selectedCat={selectedCat}
             setSelectedCat={setSelectedCat}
           />
@@ -76,23 +73,32 @@ const CatItem = ({
 };
 
 function CatDrop({
-  categories,
+  category_id = 0,
   setSelectedCat,
   selectedCat,
   setOpenFilterBox,
 }) {
+  const { shop } = useContext(ShopContext);
+  const { categories, loading } = useCategories(shop, category_id);
+
   return (
     <div>
-      {categories?.map((item, i) => (
-        <CatItem
-          key={i}
-          item={item}
-          i={i}
-          setSelectedCat={setSelectedCat}
-          selectedCat={selectedCat}
-          setOpenFilterBox={setOpenFilterBox}
-        />
-      ))}
+      {loading ? (
+        <div className="flex justify-center items-center w-full">
+          <Loader />
+        </div>
+      ) : (
+        categories?.map((item, i) => (
+          <CatItem
+            key={i}
+            item={item}
+            i={i}
+            setSelectedCat={setSelectedCat}
+            selectedCat={selectedCat}
+            setOpenFilterBox={setOpenFilterBox}
+          />
+        ))
+      )}
     </div>
   );
 }
