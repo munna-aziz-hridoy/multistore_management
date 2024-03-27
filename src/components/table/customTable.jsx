@@ -651,7 +651,27 @@ function CustomTable({
                     width: 200,
                   }}
                 >
-                  {col?.col_name}
+                  <div className="flex justify-center items-center gap-2">
+                    <p className="w-full"> {col?.col_name}</p>
+                    <textarea
+                      className="resizer"
+                      style={{
+                        resize: "horizontal",
+                        height: "10px",
+                        width: "20px",
+                        border: "none",
+                        borderLeft: "1px solid #f2f2f2",
+                        padding: "5px",
+                        caretColor: "transparent",
+                        caret: "ActiveBorder",
+                        // opacity: 0,
+                      }}
+                      name=""
+                      id=""
+                      cols="30"
+                      rows="10"
+                    ></textarea>
+                  </div>
                 </th>
               ))}
             <th

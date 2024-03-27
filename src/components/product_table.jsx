@@ -47,6 +47,7 @@ function ProductTable() {
 
   const [selectedCols, setSelectedCols] = useState(columns);
   const [custom_cols, setCustom_cols] = useState([]);
+  const [selected_custom_cols, setSelected_custom_cols] = useState([]);
 
   //   filter state
 
@@ -88,7 +89,12 @@ function ProductTable() {
       }
 
       if (shop?.custom_cols) {
-        setCustom_cols(shop?.custom_cols);
+        setCustom_cols(
+          shop?.custom_cols?.map((item, i) => ({ ...item, id: i + 1 }))
+        );
+        setSelected_custom_cols(
+          shop?.custom_cols?.map((item, i) => ({ ...item, id: i + 1 }))
+        );
       }
     }
   }, [shop, params, shops]);
@@ -122,6 +128,19 @@ function ProductTable() {
       const docRef = doc(firestore, "sites", shop?.doc_id);
 
       updateDoc(docRef, { ...shop, cols });
+
+      console.log({ ...shop, cols });
+
+      const prevDataStr = localStorage.getItem("woo_shop_list");
+
+      if (prevDataStr) {
+        const prevData = JSON.parse(prevDataStr);
+        const index = prevData.shops.findIndex((item) => item.id === shop?.id);
+        if (index !== -1) {
+          prevData.shops[index] = { ...shop, cols };
+          localStorage.setItem("woo_shop_list", JSON.stringify(prevData));
+        }
+      }
     }
   }, [selectedCols]);
 
@@ -132,6 +151,18 @@ function ProductTable() {
     } else {
       const newcols = [...selectedCols, item];
       setSelectedCols(newcols.sort((a, b) => a?.id - b?.id, 0));
+    }
+  };
+
+  const handleCustomFieldChecboxChange = (item) => {
+    if (selected_custom_cols?.map((item) => item?.id).includes(item?.id)) {
+      // Remove the item if it's already selected
+      setSelected_custom_cols(
+        selected_custom_cols.filter((col) => col.id !== item.id)
+      );
+    } else {
+      const newcols = [...selected_custom_cols, item];
+      setSelected_custom_cols(newcols.sort((a, b) => a?.id - b?.id, 0));
     }
   };
 
@@ -354,8 +385,10 @@ function ProductTable() {
                   {custom_cols?.map((item, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <input
-                        checked
-                        onChange={() => toast.error("Can't hide custom colum")}
+                        checked={selected_custom_cols
+                          ?.map((item) => item.id)
+                          .includes(item?.id)}
+                        onChange={() => handleCustomFieldChecboxChange(item)}
                         className="w-[20px] h-[20px] cursor-pointer"
                         type="checkbox"
                       />
@@ -461,7 +494,7 @@ function ProductTable() {
         <CustomTable
           products={products}
           columns={selectedCols}
-          custom_cols={custom_cols}
+          custom_cols={selected_custom_cols}
           setEditedProducts={setEditedProducts}
           updatedItems={updatedItems}
           setUpdatedItems={setUpdatedItems}
