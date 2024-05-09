@@ -218,7 +218,7 @@ function ProductChange({
                 meta_data: response?.data?.meta_data,
               });
 
-            closeModal();
+            closeModal && closeModal();
           } else {
             toast.error("Something went wrong");
 
@@ -263,7 +263,7 @@ function ProductChange({
               meta_data: response?.data?.meta_data,
             });
             refetch && refetch();
-            closeModal();
+            closeModal && closeModal();
           } else {
             toast.error("Something went wrong");
           }

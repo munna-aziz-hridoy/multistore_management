@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import { Loader, Modal, ProductChange, VariationTable } from "..";
 import { convertToLocalDate } from "@/utils";
 import ResizableTable from "./resizeable";
+import Link from "next/link";
 
 const Row = ({
   product,
@@ -526,9 +527,15 @@ const Row = ({
               className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
             >
               <div className="flex items-center justify-center gap-4">
+                <Link href={`${shop?.url}/product/${product?.id}`}>
+                  <p className="text-black/[0.54]">
+                    <RiBallPenLine />
+                  </p>
+                </Link>
+                {/* 
                 <button onClick={openModal} className="text-black/[0.54]">
                   <RiBallPenLine />
-                </button>
+                </button> */}
 
                 {is_update ? (
                   <button
