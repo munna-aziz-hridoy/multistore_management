@@ -27,7 +27,11 @@ function SidebarItem({ name, shop }) {
   const pathname = usePathname();
 
   return (
-    <Link href={`${shop?.url}?list=products`}>
+    <Link
+      href={`/shop/${shop?.domain
+        ?.replaceAll("https://", "")
+        ?.replaceAll(".", "_")}?list=products`}
+    >
       <div
         onClick={() => setShop(shop)}
         className={`flex items-center gap-3 text-[15px] w-full h-[50px] ${

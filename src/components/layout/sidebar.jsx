@@ -99,8 +99,8 @@ function Sidebar() {
               <div>
                 {shops
                   ?.filter((shop) => shop.platform !== "shopify")
-                  ?.map((shop) => (
-                    <SidebarItem name={shop?.shop_name} shop={shop} />
+                  ?.map((shop, i) => (
+                    <SidebarItem key={i} name={shop?.shop_name} shop={shop} />
                   ))}
               </div>
             </div>

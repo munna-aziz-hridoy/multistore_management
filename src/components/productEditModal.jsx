@@ -1,7 +1,7 @@
 "use client";
 
 // react import
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 
 // context
 import { ShopContext } from "@/context";
@@ -126,7 +126,7 @@ function ProductChange({
   const [selectedCats, setSelectedCats] = useState([]);
   const [description, setDescription] = useState("");
   const [short_description, setShort_description] = useState("");
-
+  const [customFields, setCustomFields] = useState([]);
   const [updating, setUpdating] = useState(false);
 
   const { shop } = useContext(ShopContext);
@@ -171,6 +171,10 @@ function ProductChange({
       setSelectedCats(product_cats);
     }
   }, [product, update]);
+
+  useEffect(() => {
+    setCustomFields(custom_cols);
+  }, [custom_cols]);
 
   const handleUpdateProduct = (e) => {
     e.preventDefault();
@@ -310,78 +314,47 @@ function ProductChange({
                   }}
                 />
               </div>
-              <div className="w-full h-[45px] rounded border border-[#B2BCCA] relative">
-                <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
-                  Price
-                </span>
-                <input
-                  className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
-                  placeholder="Price"
-                  name="price"
-                  value={currentProduct?.price}
-                  onChange={(e) => {
-                    setCurrentProduct((prev) => ({
-                      ...prev,
-                      price: e.target.value,
-                    }));
-                  }}
-                />
-              </div>
-              <div className="w-full h-[45px] rounded border border-[#B2BCCA] relative">
-                <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
-                  Sale Price
-                </span>
-                <input
-                  className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
-                  placeholder="Sale Price"
-                  name="sale_price"
-                  value={currentProduct?.sale_price}
-                  onChange={(e) => {
-                    setCurrentProduct((prev) => ({
-                      ...prev,
-                      sale_price: e.target.value,
-                    }));
-                  }}
-                />
-              </div>
-              <div className="flex gap-2 items-center h-[45px]">
-                <label className="relative inline-flex items-center cursor-pointer">
+
+              {!shop?.domain?.includes("goldshirorom.com") && (
+                <div className="w-full h-[45px] rounded border border-[#B2BCCA] relative">
+                  <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
+                    Price
+                  </span>
                   <input
-                    checked={currentProduct?.manage_stock}
+                    className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
+                    placeholder="Price"
+                    name="price"
+                    value={currentProduct?.price}
                     onChange={(e) => {
                       setCurrentProduct((prev) => ({
                         ...prev,
-                        manage_stock: e.target.checked,
+                        price: e.target.value,
                       }));
                     }}
-                    type="checkbox"
-                    value=""
-                    className="w-5 h-5 cursor-pointer"
                   />
-                </label>
-                <p className="text-black/[0.54] font-semibold text-sm w-[170px]">
-                  Manage stock
-                </p>
-                {currentProduct?.manage_stock && (
-                  <div className="w-full h-[45px] rounded border border-[#B2BCCA] relative">
-                    <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
-                      Stock Quantity
-                    </span>
-                    <input
-                      className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
-                      placeholder="Stock Quantity"
-                      name="stock_quantity"
-                      value={currentProduct?.stock_quantiy}
-                      onChange={(e) => {
-                        setCurrentProduct((prev) => ({
-                          ...prev,
-                          stock_quantiy: e.target.value,
-                        }));
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
+
+              {!shop?.domain?.includes("goldshirorom.com") && (
+                <div className="w-full h-[45px] rounded border border-[#B2BCCA] relative">
+                  <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
+                    Sale Price
+                  </span>
+                  <input
+                    className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
+                    placeholder="Sale Price"
+                    name="sale_price"
+                    value={currentProduct?.sale_price}
+                    onChange={(e) => {
+                      setCurrentProduct((prev) => ({
+                        ...prev,
+                        sale_price: e.target.value,
+                      }));
+                    }}
+                  />
+                </div>
+              )}
+
               <div className="w-full h-[45px] rounded border border-[#B2BCCA] relative">
                 <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
                   Weight
@@ -398,6 +371,26 @@ function ProductChange({
                     }));
                   }}
                 />
+              </div>
+
+              <div className="w-full h-[45px]">
+                <select
+                  value={currentProduct?.status}
+                  onChange={(e) => {
+                    setCurrentProduct((prev) => ({
+                      ...prev,
+                      status: e.target.value,
+                    }));
+                  }}
+                  className={`${
+                    currentProduct?.status === "publish"
+                      ? "text-[#25af55] bg-[#25AF55]/10 outline-[#25AF55]/10"
+                      : "text-[#f00] bg-[#f00]/10 outline-[#f00]/10"
+                  }   font-medium rounded text-sm px-4 py-2 outline  cursor-pointer w-full h-full`}
+                >
+                  <option value={"publish"}>Publish</option>
+                  <option value={"unpublish"}>Un publish</option>
+                </select>
               </div>
             </div>
 
@@ -421,24 +414,26 @@ function ProductChange({
                   }}
                 />
               </div>
-              <div className="w-full h-[45px] rounded border border-[#B2BCCA] relative">
-                <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
-                  Regular Price
-                </span>
-                <input
-                  className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
-                  placeholder="Regular Price"
-                  name="regular_price"
-                  value={currentProduct?.regular_price}
-                  onChange={(e) => {
-                    setCurrentProduct((prev) => ({
-                      ...prev,
-                      regular_price: e.target.value,
-                    }));
-                  }}
-                />
-              </div>
-              <div className="w-full">
+              {!shop?.domain?.includes("goldshirorom.com") && (
+                <div className="w-full h-[45px] rounded border border-[#B2BCCA] relative">
+                  <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
+                    Regular Price
+                  </span>
+                  <input
+                    className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
+                    placeholder="Regular Price"
+                    name="regular_price"
+                    value={currentProduct?.regular_price}
+                    onChange={(e) => {
+                      setCurrentProduct((prev) => ({
+                        ...prev,
+                        regular_price: e.target.value,
+                      }));
+                    }}
+                  />
+                </div>
+              )}
+              <div className="w-full h-[45px]">
                 <select
                   value={currentProduct?.stock_status}
                   onChange={(e) => {
@@ -452,7 +447,7 @@ function ProductChange({
                     currentProduct?.stock_status === "instock"
                       ? "text-[#25af55] bg-[#25AF55]/10 outline-[#25AF55]/10"
                       : "text-[#f00] bg-[#f00]/10 outline-[#f00]/10"
-                  }   font-medium rounded text-sm px-4 py-2 outline  cursor-pointer w-full`}
+                  }   font-medium rounded text-sm px-4 py-2 outline  cursor-pointer w-full h-full`}
                 >
                   <option value={"instock"}>In Stock</option>
                   <option value={"outofstock"}>Out of Stock</option>
@@ -466,8 +461,11 @@ function ProductChange({
                   onClick={() => setOpenCat((prev) => !prev)}
                   className="rounded w-full h-full px-4 text-black/[0.54] cursor-text flex items-center gap-1"
                 >
-                  {selectedCats?.map((cat) => (
-                    <p className="bg-gray-300 px-2 py-1 rounded text-sm flex gap-1 items-center">
+                  {selectedCats?.map((cat, i) => (
+                    <p
+                      key={i}
+                      className="bg-gray-300 px-2 py-1 rounded text-sm flex gap-1 items-center"
+                    >
                       <span>{cat?.name}</span>
                       <BsX
                         onClick={(e) => {
@@ -503,63 +501,211 @@ function ProductChange({
                   </div>
                 )}
               </div>
-              <div className="w-full h-[45px] mt-4">
-                <select
-                  value={currentProduct?.status}
-                  onChange={(e) => {
-                    setCurrentProduct((prev) => ({
-                      ...prev,
-                      status: e.target.value,
-                    }));
-                  }}
-                  className={`${
-                    currentProduct?.status === "publish"
-                      ? "text-[#25af55] bg-[#25AF55]/10 outline-[#25AF55]/10"
-                      : "text-[#f00] bg-[#f00]/10 outline-[#f00]/10"
-                  }   font-medium rounded text-sm px-4 py-2 outline  cursor-pointer w-full`}
-                >
-                  <option value={"publish"}>Publish</option>
-                  <option value={"unpublish"}>Un publish</option>
-                </select>
-              </div>
             </div>
           </div>
 
           {/* Custom Fields */}
 
-          {custom_cols?.map((col) => {
-            return (
-              <div className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center">
+          <div className="grid grid-cols-2 gap-5 mt-14">
+            {customFields
+              ?.filter(
+                (col) =>
+                  col?.col_name?.includes("New") ||
+                  col?.col_name?.includes("new")
+              )
+              ?.map((col, i) => {
+                return (
+                  <div
+                    key={i}
+                    className="w-full h-[45px] rounded border border-[#B2BCCA] relative"
+                  >
+                    <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
+                      {col?.col_name}
+                    </span>
+                    <input
+                      className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
+                      placeholder={col?.col_name}
+                      value={
+                        currentProduct?.meta_data?.find(
+                          (meta) => meta?.key === col?.meta_key
+                        )?.value
+                      }
+                      // defaultValue={metaData?.value}
+                      onChange={(e) => {
+                        // setIs_update(true);
+                        setCurrentProduct((prev) => ({
+                          ...prev,
+                          meta_data: prev?.meta_data?.map((item) => {
+                            if (item?.key === col?.meta_key) {
+                              return {
+                                ...item,
+                                value: e.target.value,
+                              };
+                            } else {
+                              return item;
+                            }
+                          }),
+                        }));
+                      }}
+                      disabled={product?.variations?.length > 0 ? true : false}
+                    />
+                  </div>
+
+                  // <div className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center my-2">
+                  //   <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
+                  //     {col?.col_name}
+                  //   </span>
+                  //   <input
+                  //     type="text"
+                  //     className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
+                  //     placeholder={col?.col_name}
+                  //     value={
+                  //       currentProduct?.meta_data?.find(
+                  //         (meta) => meta?.key === col?.meta_key
+                  //       )?.value
+                  //     }
+                  //     // defaultValue={metaData?.value}
+                  //     onChange={(e) => {
+                  //       // setIs_update(true);
+                  //       setCurrentProduct((prev) => ({
+                  //         ...prev,
+                  //         meta_data: prev?.meta_data?.map((item) => {
+                  //           if (item?.key === col?.meta_key) {
+                  //             return {
+                  //               ...item,
+                  //               value: e.target.value,
+                  //             };
+                  //           } else {
+                  //             return item;
+                  //           }
+                  //         }),
+                  //       }));
+                  //     }}
+                  //     disabled={product?.variations?.length > 0 ? true : false}
+                  //   />
+                  // </div>
+                );
+              })}
+          </div>
+
+          <div className="grid grid-cols-2 gap-5 mt-14">
+            {customFields
+              ?.filter((col) => col?.col_name?.includes("used"))
+              ?.map((col, i) => {
+                return (
+                  <div
+                    key={i}
+                    className="w-full h-[45px] rounded border border-[#B2BCCA] relative"
+                  >
+                    <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
+                      {col?.col_name}
+                    </span>
+                    <input
+                      className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
+                      placeholder={col?.col_name}
+                      value={
+                        currentProduct?.meta_data?.find(
+                          (meta) => meta?.key === col?.meta_key
+                        )?.value
+                      }
+                      // defaultValue={metaData?.value}
+                      onChange={(e) => {
+                        // setIs_update(true);
+                        setCurrentProduct((prev) => ({
+                          ...prev,
+                          meta_data: prev?.meta_data?.map((item) => {
+                            if (item?.key === col?.meta_key) {
+                              return {
+                                ...item,
+                                value: e.target.value,
+                              };
+                            } else {
+                              return item;
+                            }
+                          }),
+                        }));
+                      }}
+                      disabled={product?.variations?.length > 0 ? true : false}
+                    />
+                  </div>
+
+                  // <div className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center my-2">
+                  //   <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
+                  //     {col?.col_name}
+                  //   </span>
+                  //   <input
+                  //     type="text"
+                  //     className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
+                  //     placeholder={col?.col_name}
+                  //     value={
+                  //       currentProduct?.meta_data?.find(
+                  //         (meta) => meta?.key === col?.meta_key
+                  //       )?.value
+                  //     }
+                  //     // defaultValue={metaData?.value}
+                  //     onChange={(e) => {
+                  //       // setIs_update(true);
+                  //       setCurrentProduct((prev) => ({
+                  //         ...prev,
+                  //         meta_data: prev?.meta_data?.map((item) => {
+                  //           if (item?.key === col?.meta_key) {
+                  //             return {
+                  //               ...item,
+                  //               value: e.target.value,
+                  //             };
+                  //           } else {
+                  //             return item;
+                  //           }
+                  //         }),
+                  //       }));
+                  //     }}
+                  //     disabled={product?.variations?.length > 0 ? true : false}
+                  //   />
+                  // </div>
+                );
+              })}
+          </div>
+
+          {/* end custom fields */}
+
+          <div className="flex gap-2 items-center h-[45px] mt-5">
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                checked={currentProduct?.manage_stock}
+                onChange={(e) => {
+                  setCurrentProduct((prev) => ({
+                    ...prev,
+                    manage_stock: e.target.checked,
+                  }));
+                }}
+                type="checkbox"
+                value=""
+                className="w-5 h-5 cursor-pointer"
+              />
+            </label>
+            <p className="text-black/[0.54] font-semibold text-sm w-[170px]">
+              Manage stock
+            </p>
+            {currentProduct?.manage_stock && (
+              <div className="w-full h-[45px] rounded border border-[#B2BCCA] relative">
+                <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
+                  Stock Quantity
+                </span>
                 <input
-                  type="text"
-                  className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
-                  value={
-                    currentProduct?.meta_data?.find(
-                      (meta) => meta?.key === col?.meta_key
-                    )?.value
-                  }
-                  // defaultValue={metaData?.value}
+                  className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
+                  placeholder="Stock Quantity"
+                  name="stock_quantity"
+                  value={currentProduct?.stock_quantiy}
                   onChange={(e) => {
-                    // setIs_update(true);
                     setCurrentProduct((prev) => ({
                       ...prev,
-                      meta_data: prev?.meta_data?.map((item) => {
-                        if (item?.key === col?.meta_key) {
-                          return {
-                            ...item,
-                            value: e.target.value,
-                          };
-                        } else {
-                          return item;
-                        }
-                      }),
+                      stock_quantiy: e.target.value,
                     }));
                   }}
-                  disabled={product?.variations?.length > 0 ? true : false}
                 />
               </div>
-            );
-          })}
+            )}
+          </div>
 
           <div>
             <p className="text-sm font-semibold text-black/[0.54] mb-2">
@@ -582,7 +728,7 @@ function ProductChange({
             />
           </div>
 
-          {update && (
+          {update && product?.variations?.length > 0 && (
             <VariationTable
               id={product?.id}
               pi={0}

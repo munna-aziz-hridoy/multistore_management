@@ -9,29 +9,26 @@ const useOrders = (shop) => {
   const [perPage, setPerPage] = useState(20);
 
   const fetchProducts = () => {
-    let options = {
-      page: orders.length === 0 ? 1 : page,
-      per_page: perPage,
-    };
-
-    let endpoint = "orders";
-
-    setLoading(true);
-    woo_api(shop)
-      ?.get(endpoint, options)
-      .then((res) => {
-        setLoading(false);
-
-        if (res.headers) {
-          setTotal_page(parseInt(res?.headers["x-wp-totalpages"]));
-        }
-        setOrders(res?.data);
-      })
-      .catch((err) => {
-        setLoading(false);
-        setOrders([]);
-      })
-      ?.finally(() => setLoading(false));
+    // let options = {
+    //   page: orders.length === 0 ? 1 : page,
+    //   per_page: perPage,
+    // };
+    // let endpoint = "orders";
+    // setLoading(true);
+    // woo_api(shop)
+    //   ?.get(endpoint, options)
+    //   .then((res) => {
+    //     setLoading(false);
+    //     if (res.headers) {
+    //       setTotal_page(parseInt(res?.headers["x-wp-totalpages"]));
+    //     }
+    //     setOrders(res?.data);
+    //   })
+    //   .catch((err) => {
+    //     setLoading(false);
+    //     setOrders([]);
+    //   })
+    //   ?.finally(() => setLoading(false));
   };
 
   const refetch = () => {

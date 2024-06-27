@@ -45,9 +45,10 @@ function ProductTable() {
     stock: false,
   });
 
-  const [selectedCols, setSelectedCols] = useState(columns);
+  const [selectedCols, setSelectedCols] = useState([]);
   const [custom_cols, setCustom_cols] = useState([]);
   const [selected_custom_cols, setSelected_custom_cols] = useState([]);
+  const [colChanging, setColChanging] = useState(false);
 
   //   filter state
 
@@ -123,13 +124,14 @@ function ProductTable() {
 
   useEffect(() => {
     if (shop) {
+      setColChanging(true);
+
       const cols = selectedCols?.map((col) => col.Header);
-
       const docRef = doc(firestore, "sites", shop?.doc_id);
-
-      updateDoc(docRef, { ...shop, cols });
-
-      console.log({ ...shop, cols });
+      updateDoc(docRef, { ...shop, cols }).then(() => {
+        setColChanging(false);
+        toast.success("Columns updated successfully");
+      });
 
       const prevDataStr = localStorage.getItem("woo_shop_list");
 
@@ -360,6 +362,7 @@ function ProductTable() {
                   {columns.map((item, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <input
+                        disabled={colChanging}
                         checked={selectedCols?.includes(item)}
                         onChange={() => handleCheckboxChange(item)}
                         className="w-[20px] h-[20px] cursor-pointer"
@@ -379,6 +382,7 @@ function ProductTable() {
                   {custom_cols?.map((item, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <input
+                        disabled={colChanging}
                         checked={selected_custom_cols
                           ?.map((item) => item.id)
                           .includes(item?.id)}

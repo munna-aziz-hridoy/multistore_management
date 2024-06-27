@@ -21,7 +21,7 @@ function Loader({ large = false, small = false }) {
           fill="currentFill"
         />
       </svg>
-      <span class="sr-only">Loading...</span>
+      <span className="sr-only">Loading...</span>
     </div>
   );
 }

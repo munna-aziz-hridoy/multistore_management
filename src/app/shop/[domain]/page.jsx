@@ -25,7 +25,9 @@ function ShopPage() {
   useEffect(() => {
     if (!shop) {
       const current_shop = shops.find(
-        (shop) => shop?.id === parseInt(params?.id)
+        (shop) =>
+          shop?.domain?.replaceAll("https://", "")?.replaceAll(".", "_") ===
+          params?.domain
       );
       setShop(current_shop);
     }

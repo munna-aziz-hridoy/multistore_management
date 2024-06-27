@@ -170,8 +170,11 @@ function Row({
             />
           </td>
           <td align="center" className="border-[1.5px] border-[#f2f2f2]">
-            {variation?.attributes?.map((att) => (
-              <p className="text-sm font-semibold text-black/[0.54] capitalize">
+            {variation?.attributes?.map((att, i) => (
+              <p
+                key={i}
+                className="text-sm font-semibold text-black/[0.54] capitalize"
+              >
                 {att?.name}: {att?.option}
               </p>
             ))}

@@ -229,7 +229,7 @@ function Signup() {
         error_message={error.confirm_password.message}
       />
 
-      <div class="flex items-center me-4 mt-4">
+      <div className="flex items-center me-4 mt-4">
         <input
           id="terms_agree"
           type="checkbox"

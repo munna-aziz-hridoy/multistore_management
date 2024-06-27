@@ -17,7 +17,7 @@ const CatItem = ({
 
   return (
     <div>
-      <div class="flex items-center py-1">
+      <div className="flex items-center py-1">
         <input
           checked={selectedCat?.id === item?.id}
           onChange={(e) => {
@@ -35,11 +35,11 @@ const CatItem = ({
           type="radio"
           value=""
           name={item?.name}
-          class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 cursor-pointer"
+          className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 cursor-pointer"
         />
         <label
           for={`cat-radio-${i}`}
-          class="ms-2 font-medium text-gray-700 flex justify-between items-center w-full"
+          className="ms-2 font-medium text-gray-700 flex justify-between items-center w-full"
         >
           {item?.name}
 

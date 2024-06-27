@@ -118,8 +118,9 @@ function CustomOrderTable({ columns, orders }) {
       <table className="w-full border-collapse">
         <thead>
           <tr className="bg-[#F7F7F7]">
-            {columns?.map((col) => (
+            {columns?.map((col, i) => (
               <th
+                key={i}
                 className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]"
                 style={{
                   width: col.width,

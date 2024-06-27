@@ -451,7 +451,7 @@ const Row = ({
                 <p className="text-[10px] text-black/[0.84] text-left">
                   {product?.categories?.length > 0
                     ? product?.categories?.map((category, i) => (
-                        <span>
+                        <span key={i}>
                           {category?.name}
                           {product?.categories?.length - 1 !== i && ","}{" "}
                         </span>
@@ -461,13 +461,14 @@ const Row = ({
               </td>
             )}
 
-            {custom_cols?.map((col) => {
+            {custom_cols?.map((col, i) => {
               const metaData = product?.meta_data?.find(
                 (item) => item?.key === col?.meta_key
               );
 
               return (
                 <td
+                  key={i}
                   align="center"
                   className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
                 >
@@ -527,15 +528,19 @@ const Row = ({
               className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
             >
               <div className="flex items-center justify-center gap-4">
-                <Link href={`${shop?.url}/product/${product?.id}`}>
+                {/* <Link
+                  href={`/shop/${shop?.domain
+                    ?.replaceAll("https://", "")
+                    ?.replaceAll(".", "_")}/product/${product?.id}`}
+                >
                   <p className="text-black/[0.54]">
                     <RiBallPenLine />
                   </p>
-                </Link>
-                {/* 
+                </Link> */}
+
                 <button onClick={openModal} className="text-black/[0.54]">
                   <RiBallPenLine />
-                </button> */}
+                </button>
 
                 {is_update ? (
                   <button
@@ -620,8 +625,9 @@ function CustomTable({
       <table className="w-full border-collapse">
         <thead>
           <tr className="bg-[#F7F7F7]">
-            {columns?.map((col) => (
+            {columns?.map((col, i) => (
               <th
+                key={i}
                 className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]"
                 style={{
                   width: col.width,
@@ -651,9 +657,14 @@ function CustomTable({
               </th>
             ))}
             {custom_cols?.length > 0 &&
-              custom_cols?.map((col) => (
+              custom_cols?.map((col, i) => (
                 <th
-                  className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px] capitalize"
+                  key={i}
+                  className={`border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px] capitalize ${
+                    (col?.col_name?.includes("new") ||
+                      col?.col_name?.includes("New")) &&
+                    "bg-green-200"
+                  } ${col?.col_name?.includes("used") && "bg-orange-200"}`}
                   style={{
                     width: 200,
                   }}

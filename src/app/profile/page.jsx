@@ -193,8 +193,11 @@ function ShopList({ isShopify = false }) {
       <div className="flex flex-col gap-3 mt-7">
         {shops
           ?.filter((shop) => shop?.platform !== "shopify")
-          ?.map((shop) => (
-            <div className="flex items-center justify-between w-full gap-2 h-[60px] bg-white rounded-xl px-3">
+          ?.map((shop, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between w-full gap-2 h-[60px] bg-white rounded-xl px-3"
+            >
               <div className="flex items-center gap-2">
                 <FcShop
                   style={{
