@@ -8,7 +8,7 @@ const useOrders = (shop) => {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(20);
 
-  const fetchProducts = () => {
+  const fetchOrders = () => {
     // let options = {
     //   page: orders.length === 0 ? 1 : page,
     //   per_page: perPage,
@@ -32,11 +32,11 @@ const useOrders = (shop) => {
   };
 
   const refetch = () => {
-    fetchProducts();
+    fetchOrders();
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchOrders();
   }, [page, shop, perPage]);
 
   return {

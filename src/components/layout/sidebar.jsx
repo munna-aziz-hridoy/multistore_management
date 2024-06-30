@@ -7,7 +7,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { ShopContext, SidebarContext } from "@/context";
 
 // icon import
-import { MdOutlineSpaceDashboard } from "react-icons/md";
+
 import { HiOutlinePlusCircle } from "react-icons/hi";
 import { CgProfile } from "react-icons/cg";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -104,19 +104,6 @@ function Sidebar() {
                   ))}
               </div>
             </div>
-            {/* <div className="mt-[34px]">
-              <p className="text-[10px] text-white/[0.54] px-[25px] uppercase flex items-center gap-1">
-                <span>{collapse ? "SP" : "shopify"}</span>
-                {!collapse && <Image src={shopifyImg.src} w={30} h={30} />}
-              </p>
-              <div>
-                {shops
-                  ?.filter((shop) => shop.platform === "shopify")
-                  ?.map((shop) => (
-                    <SidebarItem name={shop?.shop_name} shop={shop} />
-                  ))}
-              </div>
-            </div> */}
           </div>
         )}
         <div className="w-full h-[1px] bg-white/20 mt-3" />
@@ -126,9 +113,9 @@ function Sidebar() {
           <div>
             <Link href="/add-shop">
               <div
-                className={`flex justify-between items-center  text-white bg-[#1879ff] rounded-[10px] cursor-pointer ${
-                  collapse ? "p-[12px] mx-[10px]" : "p-[14px] mx-[23px]"
-                }`}
+                className={`flex justify-between items-center  text-white  hover:bg-[#1879ff] rounded-[10px] cursor-pointer ${
+                  pathname === "/add-shop" ? "bg-[#1879ff]" : "bg-[#1879ff]/50"
+                }  ${collapse ? "p-[12px] mx-[10px]" : "p-[14px] mx-[23px]"}`}
               >
                 {!collapse && delay && <p>Add Shop</p>}
                 <HiOutlinePlusCircle fontSize={22} />

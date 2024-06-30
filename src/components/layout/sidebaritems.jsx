@@ -37,7 +37,10 @@ function SidebarItem({ name, shop }) {
         className={`flex items-center gap-3 text-[15px] w-full h-[50px] ${
           collapse ? "p-[15px]" : "p-[25px]"
         }  cursor-pointer ${
-          pathname === shop?.url
+          pathname ===
+          `/shop/${shop?.domain
+            ?.replaceAll("https://", "")
+            ?.replaceAll(".", "_")}`
             ? "font-semibold bg-white/[0.05] border-l-4 border-[#D1E4FF] text-[#D1E4FF]"
             : "bg-transparent border-l-4 border-transparent text-white/[0.54]"
         }`}

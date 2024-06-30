@@ -1,7 +1,7 @@
 "use client";
 
 // react import
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, Fragment } from "react";
 
 // context
 import { ShopContext } from "@/context";
@@ -117,6 +117,7 @@ function ProductChange({
     sale_price: "",
     stock_status: "instock",
     manage_stock: false,
+    featured: true,
     stock_quantiy: "",
     status: "publish",
     weight: "",
@@ -150,6 +151,7 @@ function ProductChange({
         status,
         weight,
         meta_data,
+        featured,
       } = product;
 
       setCurrentProduct({
@@ -164,6 +166,7 @@ function ProductChange({
         status,
         weight,
         meta_data,
+        featured,
       });
 
       setDescription(product_desc);
@@ -205,6 +208,7 @@ function ProductChange({
               status: response?.data?.status,
               weight: response?.data?.weight,
               meta_data: response?.data?.meta_data,
+              featured: response?.data?.featured,
             });
 
             setUpdated &&
@@ -220,6 +224,7 @@ function ProductChange({
                 status: response?.data?.status,
                 weight: response?.data?.weight,
                 meta_data: response?.data?.meta_data,
+                featured: response?.data?.featured,
               });
 
             closeModal && closeModal();
@@ -238,6 +243,7 @@ function ProductChange({
               status: product?.status,
               weight: product?.weight,
               meta_data: product?.meta_data,
+              featured: product?.featured,
             });
           }
         })
@@ -265,6 +271,7 @@ function ProductChange({
               status: response?.data?.status,
               weight: response?.data?.weight,
               meta_data: response?.data?.meta_data,
+              featured: response?.data?.featured,
             });
             refetch && refetch();
             closeModal && closeModal();
@@ -355,23 +362,25 @@ function ProductChange({
                 </div>
               )}
 
-              <div className="w-full h-[45px] rounded border border-[#B2BCCA] relative">
-                <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
-                  Weight
-                </span>
-                <input
-                  className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
-                  placeholder="Weight"
-                  name="weight"
-                  value={currentProduct?.weight}
-                  onChange={(e) => {
-                    setCurrentProduct((prev) => ({
-                      ...prev,
-                      weight: e.target.value,
-                    }));
-                  }}
-                />
-              </div>
+              {!shop?.domain?.includes("goldshirorom.com") && (
+                <div className="w-full h-[45px] rounded border border-[#B2BCCA] relative">
+                  <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
+                    Weight
+                  </span>
+                  <input
+                    className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
+                    placeholder="Weight"
+                    name="weight"
+                    value={currentProduct?.weight}
+                    onChange={(e) => {
+                      setCurrentProduct((prev) => ({
+                        ...prev,
+                        weight: e.target.value,
+                      }));
+                    }}
+                  />
+                </div>
+              )}
 
               <div className="w-full h-[45px]">
                 <select
@@ -399,11 +408,17 @@ function ProductChange({
             <div className="w-full md:w-1/2 flex flex-col gap-5">
               <div className="w-full h-[45px] rounded border border-[#B2BCCA] relative">
                 <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
-                  SKU
+                  {shop?.domain?.includes("goldshirorom.com")
+                    ? "Jancode"
+                    : "SKU"}
                 </span>
                 <input
                   className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
-                  placeholder="SKU"
+                  placeholder={
+                    shop?.domain?.includes("goldshirorom.com")
+                      ? "Jancode"
+                      : "SKU"
+                  }
                   name="sku"
                   value={currentProduct?.sku}
                   onChange={(e) => {
@@ -433,26 +448,28 @@ function ProductChange({
                   />
                 </div>
               )}
-              <div className="w-full h-[45px]">
-                <select
-                  value={currentProduct?.stock_status}
-                  onChange={(e) => {
-                    setCurrentProduct((prev) => ({
-                      ...prev,
-                      stock_status: e.target.value,
-                    }));
-                  }}
-                  disabled={currentProduct?.manage_stock}
-                  className={`${
-                    currentProduct?.stock_status === "instock"
-                      ? "text-[#25af55] bg-[#25AF55]/10 outline-[#25AF55]/10"
-                      : "text-[#f00] bg-[#f00]/10 outline-[#f00]/10"
-                  }   font-medium rounded text-sm px-4 py-2 outline  cursor-pointer w-full h-full`}
-                >
-                  <option value={"instock"}>In Stock</option>
-                  <option value={"outofstock"}>Out of Stock</option>
-                </select>
-              </div>
+              {!shop?.domain?.includes("goldshirorom.com") && (
+                <div className="w-full h-[45px]">
+                  <select
+                    value={currentProduct?.stock_status}
+                    onChange={(e) => {
+                      setCurrentProduct((prev) => ({
+                        ...prev,
+                        stock_status: e.target.value,
+                      }));
+                    }}
+                    disabled={currentProduct?.manage_stock}
+                    className={`${
+                      currentProduct?.stock_status === "instock"
+                        ? "text-[#25af55] bg-[#25AF55]/10 outline-[#25AF55]/10"
+                        : "text-[#f00] bg-[#f00]/10 outline-[#f00]/10"
+                    }   font-medium rounded text-sm px-4 py-2 outline  cursor-pointer w-full h-full`}
+                  >
+                    <option value={"instock"}>In Stock</option>
+                    <option value={"outofstock"}>Out of Stock</option>
+                  </select>
+                </div>
+              )}
               <div className="w-full h-[45px] rounded border border-[#B2BCCA] relative">
                 <span className="inline-block absolute -top-4 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
                   Category
@@ -506,14 +523,97 @@ function ProductChange({
 
           {/* Custom Fields */}
 
-          <div className="grid grid-cols-2 gap-5 mt-14">
-            {customFields
-              ?.filter(
-                (col) =>
-                  col?.col_name?.includes("New") ||
-                  col?.col_name?.includes("new")
-              )
-              ?.map((col, i) => {
+          {shop?.domain?.includes("goldshirorom.com") ? (
+            <Fragment>
+              <div className="grid grid-cols-2 gap-5 mt-14">
+                {customFields
+                  ?.filter(
+                    (col) =>
+                      col?.col_name?.includes("New") ||
+                      col?.col_name?.includes("new")
+                  )
+                  ?.map((col, i) => {
+                    return (
+                      <div
+                        key={i}
+                        className="w-full h-[45px] rounded border border-[#B2BCCA] relative"
+                      >
+                        <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
+                          {col?.col_name}
+                        </span>
+                        <input
+                          className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
+                          placeholder={col?.col_name}
+                          value={
+                            currentProduct?.meta_data?.find(
+                              (meta) => meta?.key === col?.meta_key
+                            )?.value
+                          }
+                          onChange={(e) => {
+                            setCurrentProduct((prev) => ({
+                              ...prev,
+                              meta_data: prev?.meta_data?.map((item) => {
+                                if (item?.key === col?.meta_key) {
+                                  return {
+                                    ...item,
+                                    value: e.target.value,
+                                  };
+                                } else {
+                                  return item;
+                                }
+                              }),
+                            }));
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+              </div>
+
+              <div className="grid grid-cols-2 gap-5 mt-14">
+                {customFields
+                  ?.filter((col) => col?.col_name?.includes("used"))
+                  ?.map((col, i) => {
+                    return (
+                      <div
+                        key={i}
+                        className="w-full h-[45px] rounded border border-[#B2BCCA] relative"
+                      >
+                        <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
+                          {col?.col_name}
+                        </span>
+                        <input
+                          className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
+                          placeholder={col?.col_name}
+                          value={
+                            currentProduct?.meta_data?.find(
+                              (meta) => meta?.key === col?.meta_key
+                            )?.value
+                          }
+                          onChange={(e) => {
+                            setCurrentProduct((prev) => ({
+                              ...prev,
+                              meta_data: prev?.meta_data?.map((item) => {
+                                if (item?.key === col?.meta_key) {
+                                  return {
+                                    ...item,
+                                    value: e.target.value,
+                                  };
+                                } else {
+                                  return item;
+                                }
+                              }),
+                            }));
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+              </div>
+            </Fragment>
+          ) : (
+            <div className="grid grid-cols-2 gap-5 mt-14">
+              {customFields?.map((col, i) => {
                 return (
                   <div
                     key={i}
@@ -530,9 +630,7 @@ function ProductChange({
                           (meta) => meta?.key === col?.meta_key
                         )?.value
                       }
-                      // defaultValue={metaData?.value}
                       onChange={(e) => {
-                        // setIs_update(true);
                         setCurrentProduct((prev) => ({
                           ...prev,
                           meta_data: prev?.meta_data?.map((item) => {
@@ -547,124 +645,12 @@ function ProductChange({
                           }),
                         }));
                       }}
-                      disabled={product?.variations?.length > 0 ? true : false}
                     />
                   </div>
-
-                  // <div className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center my-2">
-                  //   <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
-                  //     {col?.col_name}
-                  //   </span>
-                  //   <input
-                  //     type="text"
-                  //     className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
-                  //     placeholder={col?.col_name}
-                  //     value={
-                  //       currentProduct?.meta_data?.find(
-                  //         (meta) => meta?.key === col?.meta_key
-                  //       )?.value
-                  //     }
-                  //     // defaultValue={metaData?.value}
-                  //     onChange={(e) => {
-                  //       // setIs_update(true);
-                  //       setCurrentProduct((prev) => ({
-                  //         ...prev,
-                  //         meta_data: prev?.meta_data?.map((item) => {
-                  //           if (item?.key === col?.meta_key) {
-                  //             return {
-                  //               ...item,
-                  //               value: e.target.value,
-                  //             };
-                  //           } else {
-                  //             return item;
-                  //           }
-                  //         }),
-                  //       }));
-                  //     }}
-                  //     disabled={product?.variations?.length > 0 ? true : false}
-                  //   />
-                  // </div>
                 );
               })}
-          </div>
-
-          <div className="grid grid-cols-2 gap-5 mt-14">
-            {customFields
-              ?.filter((col) => col?.col_name?.includes("used"))
-              ?.map((col, i) => {
-                return (
-                  <div
-                    key={i}
-                    className="w-full h-[45px] rounded border border-[#B2BCCA] relative"
-                  >
-                    <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
-                      {col?.col_name}
-                    </span>
-                    <input
-                      className="rounded w-full h-full px-4 text-black/[0.84] font-semibold"
-                      placeholder={col?.col_name}
-                      value={
-                        currentProduct?.meta_data?.find(
-                          (meta) => meta?.key === col?.meta_key
-                        )?.value
-                      }
-                      // defaultValue={metaData?.value}
-                      onChange={(e) => {
-                        // setIs_update(true);
-                        setCurrentProduct((prev) => ({
-                          ...prev,
-                          meta_data: prev?.meta_data?.map((item) => {
-                            if (item?.key === col?.meta_key) {
-                              return {
-                                ...item,
-                                value: e.target.value,
-                              };
-                            } else {
-                              return item;
-                            }
-                          }),
-                        }));
-                      }}
-                      disabled={product?.variations?.length > 0 ? true : false}
-                    />
-                  </div>
-
-                  // <div className="w-full h-[40px] bg-[#f7f7f7] rounded px-2 flex items-center my-2">
-                  //   <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
-                  //     {col?.col_name}
-                  //   </span>
-                  //   <input
-                  //     type="text"
-                  //     className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54]"
-                  //     placeholder={col?.col_name}
-                  //     value={
-                  //       currentProduct?.meta_data?.find(
-                  //         (meta) => meta?.key === col?.meta_key
-                  //       )?.value
-                  //     }
-                  //     // defaultValue={metaData?.value}
-                  //     onChange={(e) => {
-                  //       // setIs_update(true);
-                  //       setCurrentProduct((prev) => ({
-                  //         ...prev,
-                  //         meta_data: prev?.meta_data?.map((item) => {
-                  //           if (item?.key === col?.meta_key) {
-                  //             return {
-                  //               ...item,
-                  //               value: e.target.value,
-                  //             };
-                  //           } else {
-                  //             return item;
-                  //           }
-                  //         }),
-                  //       }));
-                  //     }}
-                  //     disabled={product?.variations?.length > 0 ? true : false}
-                  //   />
-                  // </div>
-                );
-              })}
-          </div>
+            </div>
+          )}
 
           {/* end custom fields */}
 
@@ -705,6 +691,25 @@ function ProductChange({
                 />
               </div>
             )}
+          </div>
+          <div className="flex gap-2 items-center h-[45px]">
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                checked={currentProduct?.featured}
+                onChange={(e) => {
+                  setCurrentProduct((prev) => ({
+                    ...prev,
+                    featured: e.target.checked,
+                  }));
+                }}
+                type="checkbox"
+                value=""
+                className="w-5 h-5 cursor-pointer"
+              />
+            </label>
+            <p className="text-black/[0.54] font-semibold text-sm w-[170px]">
+              Featured
+            </p>
           </div>
 
           <div>

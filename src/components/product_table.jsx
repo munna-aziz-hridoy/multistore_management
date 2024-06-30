@@ -49,6 +49,7 @@ function ProductTable() {
   const [custom_cols, setCustom_cols] = useState([]);
   const [selected_custom_cols, setSelected_custom_cols] = useState([]);
   const [colChanging, setColChanging] = useState(false);
+  const [clickedChecked, setClickedChecked] = useState(false);
 
   //   filter state
 
@@ -130,7 +131,9 @@ function ProductTable() {
       const docRef = doc(firestore, "sites", shop?.doc_id);
       updateDoc(docRef, { ...shop, cols }).then(() => {
         setColChanging(false);
-        toast.success("Columns updated successfully");
+        if (clickedChecked) {
+          toast.success("Columns updated successfully");
+        }
       });
 
       const prevDataStr = localStorage.getItem("woo_shop_list");
@@ -147,6 +150,8 @@ function ProductTable() {
   }, [selectedCols]);
 
   const handleCheckboxChange = (item) => {
+    setClickedChecked(true);
+
     if (selectedCols.includes(item)) {
       // Remove the item if it's already selected
       setSelectedCols(selectedCols.filter((col) => col !== item));

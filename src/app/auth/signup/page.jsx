@@ -209,11 +209,11 @@ function Signup() {
             placeholder="Last Name"
             className="h-[45px] border-2 border-black/10 rounded-xl w-full py-2 px-4"
           />
-          {error.last_name.value && (
+          {/* {error.last_name.value && (
             <p className="text-xs mt-1 font-semibold text-red-400 ml-2 capitalize">
               {error.last_name.message}
             </p>
-          )}
+          )} */}
         </div>
       </div>
       <PasswordInput
