@@ -21,7 +21,11 @@ import {
 // icon import
 import { CiSearch } from "react-icons/ci";
 import { HiBars3 } from "react-icons/hi2";
-import { MdOutlineKeyboardArrowDown, MdOutlineCategory } from "react-icons/md";
+import {
+  MdOutlineKeyboardArrowDown,
+  MdOutlineCategory,
+  MdMenuOpen,
+} from "react-icons/md";
 import { HiPlusSm } from "react-icons/hi";
 import {
   IoMdArrowDropdown,
@@ -70,6 +74,7 @@ function ProductTable() {
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openColAddModal, setOpenColAddModal] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [openDropDown, setOpenDropDown] = useState(false);
 
   const params = useParams();
 
@@ -259,15 +264,15 @@ function ProductTable() {
   return (
     <div>
       <div className="flex justify-between items-center mb-5">
-        <div />
-        <div className="flex items-center justify-end gap-2">
+        <div className="hidden sm:block" />
+        <div className="flex  items-center justify-end gap-2">
           <AiOutlineReload
             className="text-primary cursor-pointer"
             onClick={handleReload}
           />
           <button
             onClick={openModal}
-            className="flex justify-center items-center gap-2 w-[160px] h-[40px] rounded-md border-[1.5px] border-primary bg-primary/[0.08] text-primary"
+            className="flex justify-center items-center gap-2 w-28 sm:w-[160px] h-[40px] rounded-md border-[1.5px] border-primary bg-primary/[0.08] text-primary"
           >
             <HiPlusSm />
             <p className="text-[12px] font-semibold text-primary">
@@ -277,35 +282,50 @@ function ProductTable() {
           <button
             disabled={editedProducts?.length === 0 ? true : false}
             onClick={handleBatchUpdate}
-            className="flex justify-center items-center gap-2 w-[160px] h-[40px] rounded-md border-[1.5px] border-primary bg-primary disabled:bg-gray-400 disabled:border-gray-400"
+            className="flex justify-center items-center gap-2 w-28 sm:w-[160px] h-[40px] rounded-md border-[1.5px] border-primary bg-primary disabled:bg-gray-400 disabled:border-gray-400"
           >
             <p className="text-[12px] font-semibold text-white">Update</p>
           </button>
         </div>
       </div>
 
-      <div className="h-[80px] w-full bg-[#f7f7f7] rounded-t-lg">
-        <div className="flex justify-between items-center h-full px-5">
-          <div className="min-w-[300px] h-[40px] border-[1.5px] border-black/[0.07] rounded-md bg-white flex items-center gap-1 px-4">
-            <p onClick={() => refetch()} className="w-[30px]">
-              <CiSearch />
-            </p>
-            <input
-              value={search}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  refetch();
-                }
-              }}
-              onChange={(e) => {
-                setSearch(e.target.value);
-              }}
-              className="h-full w-[calc(100%-30px)] text-sm"
-              placeholder="Search Products"
-            />
+      <div className="xl:h-[80px] w-full bg-[#f7f7f7] rounded-t-lg py-2">
+        <div className=" lg:hidden flex justify-between items-center w-full px-5 pb-2">
+          <div />
+          <button
+            onClick={() => setOpenDropDown((prev) => !prev)}
+            className="text-2xl text-gray-600"
+          >
+            <MdMenuOpen />
+          </button>
+        </div>
+        <div
+          className={`lg:flex flex-col xl:flex-row justify-between  items-start h-full px-5 gap-4 ${
+            openDropDown ? "flex" : "hidden"
+          }`}
+        >
+          <div className="w-full lg:max-w-[25%]">
+            <div className="w-full mb-2 lg:mb-0 lg:max-w-[300px] h-[40px] border-[1.5px] border-black/[0.07] rounded-md bg-white flex items-center gap-1 px-4">
+              <p onClick={() => refetch()} className="w-[30px]">
+                <CiSearch />
+              </p>
+              <input
+                value={search}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    refetch();
+                  }
+                }}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+                className="h-full w-[calc(100%-30px)] text-sm"
+                placeholder="Search Products"
+              />
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="relative">
+          <div className="flex flex-col lg:flex-row items-center gap-2 lg:gap-4 w-full lg:max-w-[75%]">
+            <div className="relative w-full">
               <div
                 onClick={() =>
                   setOpenFilterBox((prev) => ({
@@ -334,7 +354,7 @@ function ProductTable() {
                 </div>
               )}
             </div>
-            <div className="relative">
+            <div className="relative w-full">
               <div
                 onClick={() =>
                   setOpenFilterBox((prev) => ({
@@ -403,7 +423,7 @@ function ProductTable() {
                 </div>
               )}
             </div>
-            <div className="relative">
+            <div className="relative w-full">
               <div
                 onClick={() =>
                   setOpenFilterBox((prev) => ({
@@ -446,7 +466,7 @@ function ProductTable() {
               )}
             </div>
 
-            <div className="relative">
+            <div className="relative w-full">
               <div
                 onClick={() =>
                   setOpenFilterBox((prev) => ({

@@ -490,7 +490,7 @@ const Row = ({
                     <input
                       onDoubleClick={() => setInputBig(col?.meta_key)}
                       type="text"
-                      className={`text-black/[0.84]  h-full disabled:text-black/[0.54] ${
+                      className={`text-black/[0.84] text-sm h-full disabled:text-black/[0.54] ${
                         inputBig === col?.meta_key
                           ? "absolute w-96 h-full right-0 shadow-lg bg-[#f7f7f7] px-2 z-50 border border-gray-300 rounded"
                           : "px-1 w-[calc(100%-8px)] bg-transparent"
@@ -527,19 +527,12 @@ const Row = ({
               align="center"
               className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
             >
-              <div className="flex items-center justify-center gap-4">
-                {/* <Link
-                  href={`/shop/${shop?.domain
-                    ?.replaceAll("https://", "")
-                    ?.replaceAll(".", "_")}/product/${product?.id}`}
+              <div className="flex items-center justify-center gap-2">
+                <button
+                  onClick={openModal}
+                  className="text-black/[0.54] text-lg"
                 >
-                  <p className="text-black/[0.54]">
-                    <RiBallPenLine />
-                  </p>
-                </Link> */}
-
-                <button onClick={openModal} className="text-black/[0.54]">
-                  <RiBallPenLine />
+                  <RiBallPenLine fontSize={20} />
                 </button>
 
                 {is_update ? (
@@ -564,22 +557,22 @@ const Row = ({
                     }}
                     className="bg-red-500 w-6 h-6 rounded-full text-white"
                   >
-                    <BsX />
+                    <BsX fontSize={20} />
                   </button>
                 ) : (
                   <button onClick={handleDelete} className="text-red-500">
-                    <CgTrash />
+                    <CgTrash fontSize={20} />
                   </button>
                 )}
 
                 <button
                   disabled={!is_update}
                   onClick={handleUpdateProduct}
-                  className={` w-6 h-6 rounded-full text-white ${
+                  className={` w-5 h-5 flex justify-center items-center rounded-full text-white ${
                     is_update ? "bg-[#25AF55]" : "bg-gray-500"
                   }`}
                 >
-                  <IoIosCheckmark />
+                  <IoIosCheckmark fontSize={20} />
                 </button>
               </div>
             </td>
@@ -635,6 +628,7 @@ function CustomTable({
               >
                 <div className="flex justify-center items-center gap-2">
                   <p className="w-full"> {col.Header}</p>
+
                   <textarea
                     className="resizer"
                     style={{
@@ -676,7 +670,9 @@ function CustomTable({
                       style={{
                         resize: "horizontal",
                         height: "10px",
-                        width: "20px",
+                        width: col?.col_name.toLowerCase().includes("price")
+                          ? "65px"
+                          : "20px",
                         border: "none",
                         borderLeft: "1px solid #f2f2f2",
                         padding: "5px",

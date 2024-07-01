@@ -35,7 +35,7 @@ function SidebarItem({ name, shop }) {
       <div
         onClick={() => setShop(shop)}
         className={`flex items-center gap-3 text-[15px] w-full h-[50px] ${
-          collapse ? "p-[15px]" : "p-[25px]"
+          collapse ? "p-[15px]" : "p-[13px]"
         }  cursor-pointer ${
           pathname ===
           `/shop/${shop?.domain
@@ -50,7 +50,7 @@ function SidebarItem({ name, shop }) {
         ) : (
           <MdOutlineStoreMallDirectory fontSize={22} />
         )}
-        {!collapse && delay && <p>{name}</p>}
+        {!collapse && delay && <p className="text-sm">{name}</p>}
       </div>
     </Link>
   );

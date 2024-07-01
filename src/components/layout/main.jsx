@@ -31,8 +31,8 @@ function Main({ children }) {
               <Appbar />
               <div
                 className={`${
-                  collapse ? "ml-[70px]" : "ml-[220px]"
-                } transition-all duration-300 p-[30px]`}
+                  collapse ? "ml-[70px]" : "ml-[185px]"
+                } transition-all duration-300 p-3`}
               >
                 {children}
               </div>

@@ -56,7 +56,7 @@ function Sidebar() {
   return (
     <div
       className={`fixed bg-primary h-screen transition-all duration-300 border-r border-white/20 ${
-        collapse ? "w-[70px]" : "w-[220px]"
+        collapse ? "w-[70px]" : "w-[185px]"
       }`}
     >
       <div onClick={() => router.push("/")} className="h-[75px] cursor-pointer">
@@ -115,9 +115,9 @@ function Sidebar() {
               <div
                 className={`flex justify-between items-center  text-white  hover:bg-[#1879ff] rounded-[10px] cursor-pointer ${
                   pathname === "/add-shop" ? "bg-[#1879ff]" : "bg-[#1879ff]/50"
-                }  ${collapse ? "p-[12px] mx-[10px]" : "p-[14px] mx-[23px]"}`}
+                }  ${collapse ? "p-[12px] mx-[10px]" : "p-[10px] mx-[15px]"}`}
               >
-                {!collapse && delay && <p>Add Shop</p>}
+                {!collapse && delay && <p className="text-sm">Add Shop</p>}
                 <HiOutlinePlusCircle fontSize={22} />
               </div>
             </Link>
@@ -131,7 +131,7 @@ function Sidebar() {
             </p>
             <Link href={"/profile"}>
               <div
-                className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[20px] border-l-4 ${
+                className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[12px] border-l-4 ${
                   collapse && "justify-center"
                 } ${
                   pathname.includes("profile")
@@ -140,12 +140,12 @@ function Sidebar() {
                 }`}
               >
                 <CgProfile fontSize={22} />
-                {!collapse && delay && <p>Profile</p>}
+                {!collapse && delay && <p className="text-sm">Profile</p>}
               </div>
             </Link>
             <Link href={"/setting"}>
               <div
-                className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[20px] border-l-4 ${
+                className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[12px] border-l-4 ${
                   collapse && "justify-center"
                 } ${
                   pathname.includes("setting")
@@ -154,7 +154,7 @@ function Sidebar() {
                 }`}
               >
                 <IoSettingsOutline fontSize={22} />
-                {!collapse && delay && <p>Setting</p>}
+                {!collapse && delay && <p className="text-sm">Setting</p>}
               </div>
             </Link>
           </div>
@@ -173,7 +173,7 @@ function Sidebar() {
               }`}
             >
               <TbLogout2 fontSize={22} />
-              {!collapse && delay && <p>Logout</p>}
+              {!collapse && delay && <p className="text-sm">Logout</p>}
             </div>
           </div>
         </div>
