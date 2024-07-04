@@ -34,6 +34,8 @@ const Row = ({
 }) => {
   // context
 
+  const columnSet = new Set(columns.map((col) => col.Header));
+
   const { shop } = useContext(ShopContext);
 
   const [currentProduct, setCurrentProduct] = useState({
@@ -88,12 +90,6 @@ const Row = ({
         });
     }
   }, [is_update, currentProduct]);
-
-  function isExists(key) {
-    const exists = columns?.find((item) => item?.Header === key);
-
-    return exists ? true : false;
-  }
 
   const handleUpdateProduct = (e) => {
     e.preventDefault();
@@ -219,7 +215,7 @@ const Row = ({
           </td>
         ) : (
           <>
-            {isExists("SL") && (
+            {columnSet.has("SL") && (
               <td
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] text-black/[0.54]"
@@ -238,7 +234,7 @@ const Row = ({
                 </div>
               </td>
             )}
-            {isExists("Image") && (
+            {columnSet.has("Image") && (
               <td align="center" className="border-[1.5px] border-[#f2f2f2]">
                 <img
                   className="w-[45px] h-[45px]"
@@ -247,7 +243,7 @@ const Row = ({
                 />
               </td>
             )}
-            {isExists("Name & JAN Code") && (
+            {columnSet.has("Name & JAN Code") && (
               <td
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
@@ -269,7 +265,7 @@ const Row = ({
               </td>
             )}
 
-            {isExists("Regular Price") && (
+            {columnSet.has("Regular Price") && (
               <td
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
@@ -299,7 +295,7 @@ const Row = ({
               </td>
             )}
 
-            {isExists("Sale Price") && (
+            {columnSet.has("Sale Price") && (
               <td
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
@@ -330,7 +326,7 @@ const Row = ({
               </td>
             )}
 
-            {isExists("Stock") && (
+            {columnSet.has("Stock") && (
               <td
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
@@ -362,7 +358,7 @@ const Row = ({
                 </div>
               </td>
             )}
-            {isExists("Manage Stock") && (
+            {columnSet.has("Manage Stock") && (
               <td
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
@@ -386,7 +382,7 @@ const Row = ({
               </td>
             )}
 
-            {isExists("Quantity") && (
+            {columnSet.has("Quantity") && (
               <td
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
@@ -408,7 +404,7 @@ const Row = ({
               </td>
             )}
 
-            {isExists("Featured") && (
+            {columnSet.has("Featured") && (
               <td
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
@@ -433,7 +429,7 @@ const Row = ({
               </td>
             )}
 
-            {isExists("Total Sale") && (
+            {columnSet.has("Total Sale") && (
               <td
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
@@ -443,7 +439,7 @@ const Row = ({
                 </p>
               </td>
             )}
-            {isExists("Category") && (
+            {columnSet.has("Category") && (
               <td
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"

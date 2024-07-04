@@ -262,7 +262,7 @@ function ProductTable() {
   };
 
   return (
-    <div>
+    <div className="border-2 border-primary/20 rounded -mt-[2px] p-3">
       <div className="flex justify-between items-center mb-5">
         <div className="hidden sm:block" />
         <div className="flex  items-center justify-end gap-2">
@@ -593,7 +593,11 @@ function ProductTable() {
       </div>
       {openAddModal && (
         <Modal closeModal={closeModal}>
-          <ProductChange closeModal={closeModal} refetch={refetch} />
+          <ProductChange
+            closeModal={closeModal}
+            refetch={refetch}
+            custom_cols={custom_cols}
+          />
         </Modal>
       )}
       {openColAddModal && (

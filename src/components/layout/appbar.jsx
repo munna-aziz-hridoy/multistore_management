@@ -22,7 +22,7 @@ function Appbar() {
       <div className="h-full flex items-center">
         <div
           className={`${
-            collapse ? "w-[70px]" : "w-[220px]"
+            collapse ? "w-[70px]" : "w-[185px]"
           } h-full bg-transparent transition-all duration-300`}
         />
         <button

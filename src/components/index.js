@@ -17,6 +17,7 @@ import Modal from "./common/modal";
 import CustomColumnAdd from "./customColumnAdd";
 import ProductTable from "./product_table";
 import OrderTable from "./order_table";
+import AttributeSelect from "./common/attributeSelect";
 
 export {
   Imgs as Image,
@@ -38,4 +39,5 @@ export {
   CustomColumnAdd,
   ProductTable,
   OrderTable,
+  AttributeSelect,
 };

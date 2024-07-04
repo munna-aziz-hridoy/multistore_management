@@ -1,3 +1,5 @@
+import useAttributes from "./useAttributes";
+import useAttributesTerms from "./useAttributesTerms";
 import useCategories from "./useCategories";
 import useCurrency from "./useCurrency";
 import useOrders from "./useOrders";
@@ -16,4 +18,6 @@ export {
   useProduct,
   useCurrency,
   useOrders,
+  useAttributes,
+  useAttributesTerms,
 };

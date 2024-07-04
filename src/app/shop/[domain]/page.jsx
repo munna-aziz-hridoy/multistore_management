@@ -53,32 +53,34 @@ function ShopPage() {
         </h2>
       </div>
 
-      <ProductTable />
+      {/* <ProductTable /> */}
 
-      {/* <div className="flex gap-2 items-center mt-3">
+      <div className="flex gap-2 items-center mt-3">
         <button
           onClick={() => handleSetActive("products")}
-          className={`px-4 py-1  border border-primary rounded ${
+          className={`font-semibold px-4 py-1  border-b-[0px] border-2  rounded-t ${
             activeTab === "products"
-              ? "bg-primary text-white"
-              : "bg-white text-primary"
-          }`}
+              ? "border-primary/20 text-primary bg-white"
+              : "border-transparent text-black/60 bg-transparent"
+          } 
+          `}
         >
           Products
         </button>
         <button
           onClick={() => handleSetActive("orders")}
-          className={`px-4 py-1  border border-primary rounded ${
+          className={`font-semibold px-4 py-1  border-b-[0px] border-2  rounded-t ${
             activeTab === "orders"
-              ? "bg-primary text-white"
-              : "bg-white text-primary"
-          }`}
+              ? "border-primary/20 text-primary bg-white"
+              : "border-transparent text-black/60 bg-transparent"
+          } 
+          `}
         >
           Orders
         </button>
       </div>
       {activeTab === "products" && <ProductTable />}
-      {activeTab === "orders" && <OrderTable />} */}
+      {activeTab === "orders" && <OrderTable />}
     </div>
   );
 }

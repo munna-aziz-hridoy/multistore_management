@@ -1,7 +1,7 @@
 import { woo_api } from "@/config";
 import { useState, useEffect } from "react";
 
-const useOrders = (shop) => {
+const useOrders = (shop, search = "", status = "") => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [total_page, setTotal_page] = useState(0);
@@ -9,26 +9,26 @@ const useOrders = (shop) => {
   const [perPage, setPerPage] = useState(20);
 
   const fetchOrders = () => {
-    // let options = {
-    //   page: orders.length === 0 ? 1 : page,
-    //   per_page: perPage,
-    // };
-    // let endpoint = "orders";
-    // setLoading(true);
-    // woo_api(shop)
-    //   ?.get(endpoint, options)
-    //   .then((res) => {
-    //     setLoading(false);
-    //     if (res.headers) {
-    //       setTotal_page(parseInt(res?.headers["x-wp-totalpages"]));
-    //     }
-    //     setOrders(res?.data);
-    //   })
-    //   .catch((err) => {
-    //     setLoading(false);
-    //     setOrders([]);
-    //   })
-    //   ?.finally(() => setLoading(false));
+    let options = {
+      page: orders.length === 0 ? 1 : page,
+      per_page: perPage,
+    };
+    let endpoint = `orders?search=${search}&status=${status}`;
+    setLoading(true);
+    woo_api(shop)
+      ?.get(endpoint, options)
+      .then((res) => {
+        setLoading(false);
+        if (res.headers) {
+          setTotal_page(parseInt(res?.headers["x-wp-totalpages"]));
+        }
+        setOrders(res?.data);
+      })
+      .catch((err) => {
+        setLoading(false);
+        setOrders([]);
+      })
+      ?.finally(() => setLoading(false));
   };
 
   const refetch = () => {

@@ -7,10 +7,10 @@ import React, { useContext, useState, useEffect, Fragment } from "react";
 import { ShopContext } from "@/context";
 
 // hooks
-import { useCategories, useProduct } from "@/hooks";
+import { useCategories, useProduct, useAttributes, useCurrency } from "@/hooks";
 
 // component import
-import { Loader, RichEditor, VariationTable } from ".";
+import { AttributeSelect, Loader, RichEditor, VariationTable } from ".";
 
 // icon import
 import { IoMdArrowDropright } from "react-icons/io";
@@ -133,6 +133,16 @@ function ProductChange({
   const { shop } = useContext(ShopContext);
   const { categories, loading: catLoading } = useCategories(shop, 0);
   const { product, loading } = useProduct(shop, id);
+  const [is_variations, setIs_variations] = useState(false);
+  const { attributes, loading: attrLoading } = useAttributes(
+    shop,
+    is_variations
+  );
+
+  const [variations, setVariations] = useState([]);
+  const [currentVariation, setCurrentVariation] = useState({ attributes: [] });
+
+  const { currency } = useCurrency(shop);
 
   useEffect(() => {
     if (update && product) {
@@ -179,9 +189,15 @@ function ProductChange({
     setCustomFields(custom_cols);
   }, [custom_cols]);
 
+  useEffect(() => {
+    if (shop?.domain?.includes("goldshirorom.com")) {
+      setIs_variations(true);
+    }
+  }, [shop]);
+
   const handleUpdateProduct = (e) => {
     e.preventDefault();
-    const data = {
+    let data = {
       ...currentProduct,
       short_description,
       description,
@@ -253,6 +269,34 @@ function ProductChange({
         });
     } else {
       setUpdating(true);
+
+      if (!shop?.domain?.includes("goldshirorom.com")) {
+        delete data.weight;
+
+        data = {
+          ...data,
+          default_attributes: variations[0]?.map((variation) => ({
+            id: variation?.id,
+            option: variation?.option,
+          })),
+        };
+      } else {
+        data = {
+          ...data,
+          variations: variations?.map((variation) => {
+            const { name, ...rest } = variation;
+
+            return {
+              ...rest,
+              attributes: variation?.attributes?.map((attr) => ({
+                id: attr?.id,
+                option: attr?.option,
+              })),
+            };
+          }),
+        };
+      }
+
       woo_api(shop)
         .post(`products`, data)
         .then((response) => {
@@ -284,6 +328,11 @@ function ProductChange({
           toast.error(err?.response?.data?.message || "Something went wrong");
         });
     }
+  };
+
+  const handleAddVariation = () => {
+    setVariations([...variations, currentVariation]);
+    setCurrentVariation([]);
   };
 
   return (
@@ -692,6 +741,7 @@ function ProductChange({
               </div>
             )}
           </div>
+
           <div className="flex gap-2 items-center h-[45px]">
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -712,7 +762,261 @@ function ProductChange({
             </p>
           </div>
 
-          <div>
+          {/* variations */}
+
+          {!update && (
+            <Fragment>
+              <div className="flex gap-2 items-center h-[45px] mb-2">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    checked={is_variations}
+                    onChange={(e) => {
+                      setIs_variations(e.target.checked);
+                      if (!e.target.checked) {
+                        setCurrentVariation([]);
+                        setVariations([]);
+                      }
+                    }}
+                    type="checkbox"
+                    value=""
+                    className="w-5 h-5 cursor-pointer"
+                  />
+                </label>
+                <p className="text-black/[0.54] font-semibold text-sm">
+                  Variations
+                </p>
+
+                {is_variations && (
+                  <Fragment>
+                    {shop?.domain?.includes("goldshirorom.com") ? (
+                      <Fragment>
+                        {variations?.length < 1 && (
+                          <button
+                            onClick={handleAddVariation}
+                            className="border border-primary px-3 py-1 rounded text-primary disabled:border-gray-400 disabled:text-gray-400"
+                            disabled={currentVariation?.length === 0}
+                          >
+                            Add Attributes
+                          </button>
+                        )}
+                      </Fragment>
+                    ) : (
+                      <button
+                        onClick={handleAddVariation}
+                        className="border border-primary px-3 py-1 rounded text-primary disabled:border-gray-400 disabled:text-gray-400"
+                        disabled={currentVariation?.length === 0}
+                      >
+                        Add Variations
+                      </button>
+                    )}
+                  </Fragment>
+                )}
+              </div>
+
+              {/* variation list */}
+
+              <div className="mb-5">
+                {attrLoading ? (
+                  <div className="flex justify-center items-center py-2">
+                    <Loader />
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
+                    {attributes?.map((attribute, i) => (
+                      <AttributeSelect
+                        key={i}
+                        attribute={attribute}
+                        currentVariation={currentVariation}
+                        setCurrentVariation={setCurrentVariation}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {shop?.domain?.includes("goldshirorom.com") ? (
+                <table className="w-full my-10">
+                  <thead>
+                    <tr>
+                      <th className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                        Attributes
+                      </th>
+                      <th className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                        Stock Quantity
+                      </th>
+                      <th className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                        {variations[0]?.attributes?.map((attr, i) => (
+                          <span key={i}>
+                            {attr?.name}: {attr?.option}
+                            <br />
+                          </span>
+                        ))}
+                      </td>
+
+                      <td className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                        <div className="w-full h-[35px] bg-[#f7f7f7] rounded px-2 flex items-center relative">
+                          <input
+                            type="text"
+                            className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54] text-[12px]"
+                            onChange={(e) => {}}
+                          />
+                        </div>
+                      </td>
+                      <td
+                        align="center"
+                        className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]"
+                      >
+                        <button
+                          onClick={() => {
+                            setVariations([]);
+                            setCurrentVariation([]);
+                          }}
+                          className="text-red-500"
+                        >
+                          <CgTrash fontSize={20} />
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              ) : (
+                <Fragment>
+                  {variations?.length > 0 && (
+                    <table className="w-full my-10">
+                      <thead>
+                        <tr>
+                          <th className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                            Attributes
+                          </th>
+
+                          <th className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                            Regular Price
+                          </th>
+                          <th className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                            Sale Price
+                          </th>
+
+                          <th className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                            Stock Quantity
+                          </th>
+                          <th className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                            Action
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {variations?.map((variation, i) => (
+                          <tr key={i}>
+                            <td className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                              {variation?.attributes?.map((attr, i) => (
+                                <span key={i}>
+                                  {attr?.name}: {attr?.option}
+                                  <br />
+                                </span>
+                              ))}
+                            </td>
+
+                            <td className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                              <div className="w-full h-[35px] bg-[#f7f7f7] rounded px-2 flex items-center relative">
+                                <span
+                                  className="inline-block w-2"
+                                  dangerouslySetInnerHTML={{
+                                    __html: currency?.symbol,
+                                  }}
+                                />
+                                <input
+                                  type="text"
+                                  className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54] text-[12px]"
+                                  onChange={(e) => {
+                                    setVariations((prev) =>
+                                      prev?.map((it) => {
+                                        if (it === variation) {
+                                          return {
+                                            ...it,
+                                            regular_price: e.target.value,
+                                          };
+                                        } else {
+                                          return it;
+                                        }
+                                      })
+                                    );
+                                  }}
+                                />
+                              </div>
+                            </td>
+                            <td className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                              <div className="w-full h-[35px] bg-[#f7f7f7] rounded px-2 flex items-center relative">
+                                <span
+                                  className="inline-block w-2"
+                                  dangerouslySetInnerHTML={{
+                                    __html: currency?.symbol,
+                                  }}
+                                />
+                                <input
+                                  type="text"
+                                  className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54] text-[12px]"
+                                  onChange={(e) => {
+                                    setVariations((prev) =>
+                                      prev?.map((it) => {
+                                        if (it === variation) {
+                                          return {
+                                            ...it,
+                                            sale_price: e.target.value,
+                                          };
+                                        } else {
+                                          return it;
+                                        }
+                                      })
+                                    );
+                                  }}
+                                />
+                              </div>
+                            </td>
+
+                            <td className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]">
+                              <div className="w-full h-[35px] bg-[#f7f7f7] rounded px-2 flex items-center relative">
+                                <input
+                                  type="text"
+                                  className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54] text-[12px]"
+                                  onChange={(e) => {}}
+                                />
+                              </div>
+                            </td>
+                            <td
+                              align="center"
+                              className="border-[1.5px] border-[#f2f2f2] text-black/[0.54] font-normal text-[12px] p-[10px]"
+                            >
+                              <button
+                                onClick={() => {
+                                  setVariations((prev) =>
+                                    prev.filter((item) => item !== variation)
+                                  );
+                                }}
+                                className="text-red-500"
+                              >
+                                <CgTrash fontSize={20} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </Fragment>
+              )}
+            </Fragment>
+          )}
+
+          {/* end variations */}
+
+          <div className="mt-10">
             <p className="text-sm font-semibold text-black/[0.54] mb-2">
               Short description
             </p>
