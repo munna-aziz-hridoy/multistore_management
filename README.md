@@ -1,10 +1,33 @@
 # Retail Flow Documentation and User Guide
 
-# Overview of Retail Flow
+## Table of Contents
+
+1. [Overview of Retail Flow](#overview-of-retail-flow)
+   - [Key Features](#key-features)
+   - [Benefits](#benefits)
+   - [Technical Implementation](#technical-implementation)
+   - [Potential Areas for Enhancement](#potential-areas-for-enhancement)
+   - [Use Cases](#use-cases)
+   - [Conclusion](#conclusion)
+2. [Getting Started](#getting-started)
+   - [Logging In](#logging-in)
+   - [Adding a Store](#adding-a-store)
+3. [Managing Stores](#managing-stores)
+   - [Viewing Stores](#viewing-stores)
+4. [Product Management](#product-management)
+   - [Viewing Products](#viewing-products)
+   - [Editing Multiple Products](#editing-multiple-products)
+5. [Order Management](#order-management)
+   - [Viewing Orders](#viewing-orders)
+   - [Editing Multiple Orders](#editing-multiple-orders)
+6. [Frequently Asked Questions (FAQ)](#frequently-asked-questions-faq)
+7. [Support](#support)
+
+## Overview of Retail Flow
 
 Retail Flow is a SaaS application designed to simplify and enhance the management of multiple WooCommerce stores. It provides store managers with the tools they need to efficiently update product and order information without navigating the cumbersome WooCommerce dashboard. Here’s a detailed overview of Retail Flow's features, functionalities, and benefits:
 
-## Key Features
+### Key Features
 
 1. **Multi-Store Management:**
 
@@ -31,7 +54,7 @@ Retail Flow is a SaaS application designed to simplify and enhance the managemen
 5. **Secure Login Options:**
    - Supports login via email/password and Google account for convenience and security.
 
-## Benefits
+### Benefits
 
 - **Increased Efficiency:**
 
@@ -48,18 +71,18 @@ Retail Flow is a SaaS application designed to simplify and enhance the managemen
 - **Ease of Use:**
   - The application’s user-friendly interface ensures that even users with minimal technical expertise can manage their stores effectively.
 
-## Technical Implementation
+### Technical Implementation
 
 - **Platform:** Hosted on Vercel, ensuring reliable and scalable infrastructure.
 - **Integration:** Uses WooCommerce API to connect and manage store data securely.
 
-## Potential Areas for Enhancement
+### Potential Areas for Enhancement
 
 - **Visual Feedback:** Adding loading indicators and success messages can improve user experience by providing clear feedback during operations.
 - **Customization:** Allowing users to customize which product attributes are displayed and edited can provide a more personalized experience.
 - **Advanced Features:** Introducing advanced analytics, automated tasks, and enhanced inventory management features can further expand the application’s capabilities.
 
-## Use Cases
+### Use Cases
 
 1. **Small to Medium-Sized E-commerce Businesses:**
 
@@ -72,31 +95,11 @@ Retail Flow is a SaaS application designed to simplify and enhance the managemen
 3. **Agencies and Developers:**
    - Web development agencies and freelancers managing multiple client stores can streamline their workflows using Retail Flow.
 
-## Conclusion
+### Conclusion
 
 Retail Flow is a comprehensive solution for WooCommerce store management, addressing critical pain points related to multi-store management and bulk updates. Its user-friendly interface, efficient bulk editing capabilities, and scalability make it an invaluable tool for e-commerce store managers and developers alike.
 
 By continuously improving and expanding its features, Retail Flow can maintain its position as a leading SaaS solution for WooCommerce store management, providing enhanced value to its users.
-
-## Introduction
-
-Welcome to **Retail Flow**, a powerful SaaS application designed to streamline the management of multiple WooCommerce stores. With Retail Flow, store managers can efficiently update product and order information across various stores without the need to navigate through the cumbersome WooCommerce dashboard. This user guide provides a comprehensive overview of how to use Retail Flow, from logging in to managing stores, products, and orders.
-
-## Table of Contents
-
-1. [Getting Started](#getting-started)
-   - [Logging In](#logging-in)
-   - [Adding a Store](#adding-a-store)
-2. [Managing Stores](#managing-stores)
-   - [Viewing Stores](#viewing-stores)
-3. [Product Management](#product-management)
-   - [Viewing Products](#viewing-products)
-   - [Editing Multiple Products](#editing-multiple-products)
-4. [Order Management](#order-management)
-   - [Viewing Orders](#viewing-orders)
-   - [Editing Multiple Orders](#editing-multiple-orders)
-5. [Frequently Asked Questions (FAQ)](#frequently-asked-questions-faq)
-6. [Support](#support)
 
 ## Getting Started
 
