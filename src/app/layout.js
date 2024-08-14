@@ -9,7 +9,7 @@ import "@/styles/globals.css";
 import { Toaster } from "react-hot-toast";
 
 export const metadata = {
-  title: "WMPS",
+  title: "ShopKool",
   description: "Multistore management system",
 };
 

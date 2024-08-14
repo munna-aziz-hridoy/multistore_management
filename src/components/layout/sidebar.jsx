@@ -62,7 +62,7 @@ function Sidebar() {
       <div onClick={() => router.push("/")} className="h-[75px] cursor-pointer">
         {!collapse && delay ? (
           <div className="p-[10px]">
-            <Image src={logoMain.src} w={143} h={50} />
+            <Image src={logoMain.src} w={163} h={60} />
           </div>
         ) : (
           <div className="p-[18px]">

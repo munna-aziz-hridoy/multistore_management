@@ -7,7 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 // import images
-import logo from "@/assets/images/logo.png";
+import logo from "@/assets/images/logo_main.png";
 import logoIcon from "@/assets/images/logo_icon.png";
 
 // components
@@ -87,7 +87,7 @@ function Layout({ children }) {
             className="w-[145px] h-[50px] bg-primary rounded-lg flex justify-center items-center gap-3 border-2 border-white/[0.38] cursor-pointer"
           >
             <Image src={logoIcon.src} w={30} h={31} />
-            <p className="text-white font-extrabold text-xl">WMPS</p>
+            <p className="text-white font-extrabold text-xl">StoreKool</p>
           </div>
           {path.includes("signin") ? (
             <p className="text-black/[0.38]">
@@ -132,8 +132,8 @@ function Layout({ children }) {
       </div>
       <div className="hidden justify-center items-center bg-primary w-full lg:w-1/2 lg:flex">
         <div className="relative w-[313px] h-[300px]">
-          <Image src={logo.src} w={313} h={300} />
-          <div className="absolute -bottom-16 left-[25px] w-[150%] h-2/3 bg-gradient-to-b from-[#0060e3] to-[#0060e399] opacity-95  blur-md  backdrop-filter backdrop-blur-3xl custom -translate-x-[25%]" />
+          <Image src={logo.src} w={313} h={110} />
+          <div className="absolute bottom-2 left-[25px] w-[150%] h-2/3 bg-gradient-to-b from-[#0060e3] to-[#0060e399] opacity-95  blur-md  backdrop-filter backdrop-blur-3xl custom -translate-x-[25%] top-[68px]" />
         </div>
       </div>
     </div>
