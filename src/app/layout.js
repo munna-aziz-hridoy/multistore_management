@@ -9,8 +9,8 @@ import "@/styles/globals.css";
 import { Toaster } from "react-hot-toast";
 
 export const metadata = {
-  title: "ShopKool",
-  description: "Multistore management system",
+  title: "StoreKool",
+  description: "Multiple Woo-commerce store management system",
 };
 
 export default function RootLayout({ children }) {
