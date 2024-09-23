@@ -48,10 +48,6 @@ function StepTwo({ platform }) {
     },
   });
 
-  // component state
-  const [openType, setOpenType] = useState(false);
-  const [openCurrency, setOpenCurrency] = useState(false);
-
   const [selectedType, setSelectedType] = useState(shoptype[0]);
   const [selectedCurrency, setSelectedCurrency] = useState(currency.USD);
 
@@ -64,7 +60,7 @@ function StepTwo({ platform }) {
     loading,
     refetch: userRefetch,
   } = useContext(UserContext);
-  const { refetch } = useContext(ShopContext);
+  const { refetch, shops } = useContext(ShopContext);
 
   useEffect(() => {
     userRefetch();
@@ -126,8 +122,12 @@ function StepTwo({ platform }) {
     });
 
     if (!Object.values(error).some((e) => e.value)) {
-      setAdding(true);
+      if (shops?.length === 2) {
+        toast.error("You can only add two shops");
+        return;
+      }
 
+      setAdding(true);
       const hex_id = parseInt(uuid().replace(/-/g, "").substr(0, 6), 16);
 
       const shopDoc = {

@@ -12,8 +12,6 @@ const useAttributes = (shop, isVariations) => {
         woo_api(shop)
           .get("products/attributes")
           .then((response) => {
-            console.log(response);
-
             setAttributes(response.data);
             setLoading(false);
           });
