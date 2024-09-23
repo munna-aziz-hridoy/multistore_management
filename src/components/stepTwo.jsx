@@ -7,7 +7,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { currency, shoptype } from "@/assets/data";
 
 // icon import
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 // firebase import
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
@@ -17,7 +16,7 @@ import { v4 as uuid } from "uuid";
 import { firestore } from "@/firebase.init";
 import { ShopContext, UserContext } from "@/context";
 import toast from "react-hot-toast";
-import { Loader } from ".";
+import { Loader, DownloadCredential } from ".";
 
 function StepTwo({ platform }) {
   // error state
@@ -143,6 +142,15 @@ function StepTwo({ platform }) {
         platform: data.platform,
         type: data.type,
         currency: data.currency,
+        cols: [
+          "Image",
+          "Name & JAN Code",
+          "Regular Price",
+          "Sale Price",
+          "Stock",
+          "Manage Stock",
+          "Quantity",
+        ],
       };
 
       addDoc(collection(firestore, "sites"), shopDoc).then((savedDoc) => {
@@ -180,9 +188,14 @@ function StepTwo({ platform }) {
 
   return (
     <div className="w-full min-h-[400px] shadow-md border-2 border-black/[0.07] rounded-md p-5 mt-12">
-      <h2 className="text-base text-black/[0.84] font-semibold mb-6">
-        Add shop
-      </h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-base text-black/[0.84] font-semibold mb-6">
+          Add shop
+        </h2>
+        <div>
+          <DownloadCredential />
+        </div>
+      </div>
       {adding || loading ? (
         <div className="flex justify-center items-center py-5">
           <Loader />

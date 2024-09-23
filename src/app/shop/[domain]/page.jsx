@@ -11,6 +11,7 @@ import {
   useRouter,
   useSearchParams,
 } from "next/navigation";
+import Invoice from "@/components/common/invoice";
 
 function ShopPage() {
   const [activeTab, setActiveTab] = useState("products");

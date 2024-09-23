@@ -16,8 +16,6 @@ import { woo_api } from "@/config";
 import toast from "react-hot-toast";
 import { Loader, Modal, ProductChange, VariationTable } from "..";
 import { convertToLocalDate } from "@/utils";
-import ResizableTable from "./resizeable";
-import Link from "next/link";
 
 const Row = ({
   product,
@@ -551,7 +549,7 @@ const Row = ({
                         prev?.filter((item) => item?.id !== product?.id)
                       );
                     }}
-                    className="bg-red-500 w-6 h-6 rounded-full text-white"
+                    className="bg-red-500 w-5 h-5 rounded-full text-white flex justify-center items-center"
                   >
                     <BsX fontSize={20} />
                   </button>

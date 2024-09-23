@@ -1,5 +1,5 @@
 // component import
-import { Main } from "@/components";
+import { GoogleAnalytics, Main } from "@/components";
 
 // context import
 import { SidebarContextProvider } from "@/context";
@@ -17,6 +17,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        <GoogleAnalytics />
         <SidebarContextProvider>
           <Main>{children}</Main>
         </SidebarContextProvider>

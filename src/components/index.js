@@ -18,6 +18,9 @@ import CustomColumnAdd from "./customColumnAdd";
 import ProductTable from "./product_table";
 import OrderTable from "./order_table";
 import AttributeSelect from "./common/attributeSelect";
+import DownloadCredential from "./common/credential_download_button";
+import Invoice from "./common/invoice";
+import GoogleAnalytics from "./common/googleAnalytics";
 
 export {
   Imgs as Image,
@@ -40,4 +43,7 @@ export {
   ProductTable,
   OrderTable,
   AttributeSelect,
+  GoogleAnalytics,
+  DownloadCredential,
+  Invoice,
 };

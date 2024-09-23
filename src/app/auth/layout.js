@@ -23,6 +23,7 @@ import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { auth, firestore } from "@/firebase.init";
 import toast from "react-hot-toast";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import DownloadCredential from "@/components/common/credential_download_button";
 
 function Layout({ children }) {
   const [loading, setLoading] = useState(false);
@@ -126,9 +127,11 @@ function Layout({ children }) {
             </button>
           </div>
         </div>
-        <p className="text-black/[0.38] text-xs">
-          © 2022 WMPS. All rights reserved.
-        </p>
+        <div className="flex justify-between items-center">
+          <p className="text-black/[0.38] text-xs">
+            © 2022 WMPS. All rights reserved.
+          </p>
+        </div>
       </div>
       <div className="hidden justify-center items-center bg-primary w-full lg:w-1/2 lg:flex">
         <div className="relative w-[313px] h-[300px]">

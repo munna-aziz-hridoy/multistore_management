@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Fragment, useContext } from "react";
 import { BsX } from "react-icons/bs";
 import { CgTrash } from "react-icons/cg";
-import { IoIosCheckmark } from "react-icons/io";
+import { IoIosCheckmark, IoMdPrint } from "react-icons/io";
 import { RiBallPenLine } from "react-icons/ri";
 import AddressForm from "../addressForm";
-import { Loader, Modal } from "..";
+import { Loader, Modal, Invoice } from "..";
 import { woo_api } from "@/config";
 import { ShopContext } from "@/context";
 import toast from "react-hot-toast";
@@ -62,6 +62,7 @@ function Row({
   const [is_update, setIs_update] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [openInvoice, setOpenInvoice] = useState(false);
   const [addressModalname, setAddressModalname] = useState("");
   const { shop } = useContext(ShopContext);
 
@@ -148,6 +149,14 @@ function Row({
           }
         });
     }
+  };
+
+  const handleOpenInvoice = () => {
+    setOpenInvoice(true);
+  };
+
+  const handleCloseInvoice = () => {
+    setOpenInvoice(false);
   };
 
   return (
@@ -478,9 +487,15 @@ function Row({
               <button
                 disabled={!is_update}
                 onClick={handleUpdateOrder}
-                className={` w-6 h-6 bg-[#25AF55] rounded-full text-white flex justify-center items-center disabled:bg-gray-500`}
+                className={` w-5 h-5 bg-[#25AF55] rounded-full text-white flex justify-center items-center disabled:bg-gray-500`}
               >
                 <IoIosCheckmark fontSize={20} />
+              </button>
+              <button
+                onClick={handleOpenInvoice}
+                className={` w-6 h-6  rounded-full text-black/70 flex justify-center items-center disabled:bg-gray-500`}
+              >
+                <IoMdPrint fontSize={20} />
               </button>
             </div>
           </td>
@@ -494,6 +509,11 @@ function Row({
             prevAddress={currentOrder[addressModalname]}
             closeModal={closeModal}
           />
+        </Modal>
+      )}
+      {openInvoice && (
+        <Modal closeModal={handleCloseInvoice}>
+          <Invoice data={order} />
         </Modal>
       )}
     </Fragment>
