@@ -154,20 +154,6 @@ function StepTwo({ platform }) {
       };
 
       addDoc(collection(firestore, "sites"), shopDoc).then((savedDoc) => {
-        let shops = [shopDoc];
-
-        // const prevCredStr = localStorage.getItem("woo_shop_list");
-
-        // if (prevCredStr) {
-        //   const prevCred = JSON.parse(prevCredStr);
-        //   shops = [shopDoc, ...prevCred.shops];
-        // }
-
-        // localStorage.setItem(
-        //   "woo_shop_list",
-        //   JSON.stringify({ userId: db_id, shops })
-        // );
-
         const shop_id = savedDoc.id;
         const docRef = doc(firestore, "users", db_id);
 
