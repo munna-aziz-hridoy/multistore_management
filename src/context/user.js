@@ -9,10 +9,10 @@ export const UserContext = createContext();
 
 export default function UserContextProvider({ children }) {
   const [user] = useAuthState(auth);
-  const { db_id, sites, loading, refetch } = useUserInfo(user?.email);
+  const { db_id, sites, loading, refetch, userInfo } = useUserInfo(user?.email);
 
   return (
-    <UserContext.Provider value={{ db_id, sites, loading, refetch }}>
+    <UserContext.Provider value={{ db_id, sites, loading, refetch, userInfo }}>
       {children}
     </UserContext.Provider>
   );

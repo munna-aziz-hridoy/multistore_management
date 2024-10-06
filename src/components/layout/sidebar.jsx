@@ -1,10 +1,10 @@
 "use client";
 
 // react import
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, Fragment } from "react";
 
 // context import
-import { ShopContext, SidebarContext } from "@/context";
+import { ShopContext, SidebarContext, UserContext } from "@/context";
 
 // icon import
 
@@ -31,10 +31,13 @@ import toast from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
 
 function Sidebar() {
+  const [is_allowed, setIs_allowed] = useState(false);
+
   //  context
 
   const { collapse, delay } = useContext(SidebarContext);
   const { shops, loading } = useContext(ShopContext);
+  const { userInfo, sites } = useContext(UserContext);
 
   // firebase hook
 
@@ -44,6 +47,16 @@ function Sidebar() {
 
   const router = useRouter();
   const pathname = usePathname();
+
+  useEffect(() => {
+    const allowed =
+      userInfo?.license_key ||
+      (!userInfo?.license_key && (!sites || sites?.length <= 1))
+        ? true
+        : false;
+
+    setIs_allowed(allowed);
+  }, [userInfo, sites]);
 
   const handleSignout = () => {
     signOut().then(() => {
@@ -111,16 +124,38 @@ function Sidebar() {
           className={` flex flex-col justify-between h-[calc(100%-390px)] mt-5`}
         >
           <div>
-            <Link href="/add-shop">
-              <div
-                className={`flex justify-between items-center  text-white  hover:bg-[#1879ff] rounded-[10px] cursor-pointer ${
-                  pathname === "/add-shop" ? "bg-[#1879ff]" : "bg-[#1879ff]/50"
-                }  ${collapse ? "p-[12px] mx-[10px]" : "p-[10px] mx-[15px]"}`}
-              >
-                {!collapse && delay && <p className="text-sm">Add Shop</p>}
-                <HiOutlinePlusCircle fontSize={22} />
-              </div>
-            </Link>
+            <Fragment>
+              {is_allowed ? (
+                <Link href="/add-shop">
+                  <div
+                    className={`flex justify-between items-center  text-white  hover:bg-[#1879ff] rounded-[10px] cursor-pointer ${
+                      pathname === "/add-shop"
+                        ? "bg-[#1879ff]"
+                        : "bg-[#1879ff]/50"
+                    }  ${
+                      collapse ? "p-[12px] mx-[10px]" : "p-[10px] mx-[15px]"
+                    }`}
+                  >
+                    {!collapse && delay && <p className="text-sm">Add Shop</p>}
+                    <HiOutlinePlusCircle fontSize={22} />
+                  </div>
+                </Link>
+              ) : (
+                <div
+                  onClick={() =>
+                    toast.error("You are not allowed to add more shop")
+                  }
+                  className={`flex justify-between items-center  text-white  hover:bg-[#1879ff] rounded-[10px] cursor-pointer ${
+                    pathname === "/add-shop"
+                      ? "bg-[#1879ff]"
+                      : "bg-[#1879ff]/50"
+                  }  ${collapse ? "p-[12px] mx-[10px]" : "p-[10px] mx-[15px]"}`}
+                >
+                  {!collapse && delay && <p className="text-sm">Add Shop</p>}
+                  <HiOutlinePlusCircle fontSize={22} />
+                </div>
+              )}
+            </Fragment>
 
             <p
               className={`text-[10px] text-white/[0.54] px-[23px] uppercase mt-[50px] mb-3 ${

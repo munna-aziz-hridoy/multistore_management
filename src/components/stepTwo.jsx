@@ -59,6 +59,7 @@ function StepTwo({ platform }) {
     sites,
     loading,
     refetch: userRefetch,
+    userInfo,
   } = useContext(UserContext);
   const { refetch, shops } = useContext(ShopContext);
 
@@ -252,80 +253,7 @@ function StepTwo({ platform }) {
               )}
             </div>
           </div>
-          {/* <div className="flex justify-center items-center gap-5 my-6">
-            <div className="w-1/2 h-[45px] rounded border border-[#B2BCCA] relative">
-              <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
-                Business Type
-              </span>
-              <div className="w-full h-full flex justify-between items-center gap-2 cursor-pointer relative">
-                <input
-                  onClick={() => {
-                    setOpenType((prev) => !prev);
-                  }}
-                  className="rounded w-full h-full px-4 text-black/[0.84] font-semibold cursor-pointer bg-transparent capitalize"
-                  placeholder="Ex: Mobile shop"
-                  value={selectedType.title}
-                />
-                <MdOutlineKeyboardArrowDown />
-                {openType && (
-                  <ul className="w-full absolute top-12 bg-white shadow-md rounded-md p-2">
-                    {shoptype.map((type) => (
-                      <li
-                        onClick={() => {
-                          setSelectedType(type);
-                          setOpenType(false);
-                        }}
-                        className="w-full py-3 bg-primary/5 px-5 my-2 rounded-md text-black/[0.54] font-semibold capitalize hover:bg-primary hover:text-white duration-200"
-                      >
-                        {type.title}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              {error.type.value && (
-                <p className="text-xs text-red-500 font-semibold capitalize">
-                  {error.type.message}
-                </p>
-              )}
-            </div>
-            <div className="w-1/2 h-[45px] rounded border border-[#B2BCCA] relative">
-              <span className="inline-block absolute -top-3 left-3 text-sm text-black/[0.34] bg-white px-2 capitalize">
-                Store Currency
-              </span>
-              <div className="w-full h-full flex justify-between items-center gap-2 cursor-pointer">
-                <input
-                  onClick={() => {
-                    setOpenCurrency((prev) => !prev);
-                  }}
-                  className="rounded w-full h-full px-4 text-black/[0.84] font-semibold cursor-pointer"
-                  placeholder="Ex: $ (US Dollar)"
-                  value={`${selectedCurrency.symbol} ${selectedCurrency.name}`}
-                />
-                <MdOutlineKeyboardArrowDown />
-              </div>
-              {openCurrency && (
-                <ul className="w-full absolute top-12 bg-white shadow-md rounded-md p-2 max-h-72 overflow-auto">
-                  {Object.keys(currency).map((key) => (
-                    <li
-                      onClick={() => {
-                        setSelectedCurrency(currency[key]);
-                        setOpenCurrency(false);
-                      }}
-                      className="w-full py-1 px-5 my-1 rounded-md text-black/[0.54] font-semibold capitalize hover:bg-primary/10  hover:text-primary duration-200 cursor-pointer"
-                    >
-                      {`${currency[key].symbol} - ${currency[key].name}`}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {error.currency.value && (
-                <p className="text-xs text-red-500 font-semibold capitalize">
-                  {error.currency.message}
-                </p>
-              )}
-            </div>
-          </div> */}
+
           <button
             type="submit"
             className="w-full bg-primary h-[45px] rounded-md text-white font-medium mt-6 hover:bg-primary/80 duration-100"
@@ -339,29 +267,3 @@ function StepTwo({ platform }) {
 }
 
 export default StepTwo;
-
-// const hex_id = parseInt(uuid().replace(/-/g, "").substr(0, 6), 16);
-
-// addDoc(collection(firestore, "sites"), {
-//   shop_name: shopName,
-//   product_type: type,
-//   domain: shopUrl,
-//   ck,
-//   cs,
-//   user_id: userDbId,
-//   id: hex_id,
-// }).then((data) => {
-//   const shop_id = data?.id;
-//   const docRef = doc(firestore, "users", userDbId);
-
-//   updateDoc(docRef, { sites: [...userSites, shop_id] }).then((data) => {
-//     userRefetch((prev) => !prev);
-//     setShopName("");
-//     setType("General");
-//     setShopUrl("");
-//     setCk("");
-//     setCs("");
-//     toast.success("Shop Created");
-//     shopRefetch((prev) => !prev);
-//   });
-// });

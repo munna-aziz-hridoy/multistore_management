@@ -3,6 +3,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { firestore } from "@/firebase.init";
 
 const useUserInfo = (email) => {
+  const [userInfo, setUserInfo] = useState(null);
   const [db_id, setDb_id] = useState("");
   const [sites, setSites] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -19,7 +20,7 @@ const useUserInfo = (email) => {
         if (!data.empty) {
           const user = data.docs[0];
 
-          console.log(user);
+          setUserInfo(user.data());
 
           setDb_id(user.id);
           const sites = user.data()?.sites || [];
@@ -40,7 +41,7 @@ const useUserInfo = (email) => {
     fetchInfo();
   };
 
-  return { db_id, sites, refetch, loading };
+  return { db_id, sites, refetch, loading, userInfo };
 };
 
 export default useUserInfo;
