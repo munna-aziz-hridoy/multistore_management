@@ -99,6 +99,7 @@ function ProductTable() {
         setCustom_cols(
           shop?.custom_cols?.map((item, i) => ({ ...item, id: i + 1 }))
         );
+
         setSelected_custom_cols(
           shop?.custom_cols?.map((item, i) => ({ ...item, id: i + 1 }))
         );
@@ -125,8 +126,6 @@ function ProductTable() {
   );
 
   const { currency, loading: currencyLoading } = useCurrency(shop);
-
-  const { orders } = useOrders(shop);
 
   useEffect(() => {
     if (shop) {

@@ -10,26 +10,6 @@ const useShops = (userId) => {
     if (userId) {
       setLoading(true);
 
-      // const prevCredStr = localStorage.getItem("woo_shop_list");
-
-      // if (prevCredStr) {
-      //   const prevCred = JSON.parse(prevCredStr);
-
-      //   if (prevCred?.userId === userId) {
-      //     const storedShops = prevCred?.shops?.map((item) => {
-      //       return {
-      //         ...item,
-      //       };
-      //     });
-
-      //     setShops(storedShops);
-      //     setLoading(false);
-      //     return;
-      //   } else {
-      //     setLoading(false);
-      //     return;
-      //   }
-      // } else {
       const q = query(
         collection(firestore, "sites"),
         where("user_id", "==", userId)

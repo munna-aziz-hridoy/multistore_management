@@ -241,7 +241,7 @@ const Row = ({
                 />
               </td>
             )}
-            {columnSet.has("Name & JAN Code") && (
+            {columnSet.has("Name") && (
               <td
                 align="center"
                 className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
@@ -250,15 +250,37 @@ const Row = ({
                   <p className="text-[12px] text-left font-semibold text-black/[0.84]">
                     {currentProduct?.name}
                   </p>
-                  <p className="text-[9px] font-normal text-black/[0.54]">
-                    SKU: {currentProduct?.sku || "N/A"}
-                  </p>
                   <p className="text-[9px] font-medium text-primary">
                     Last modified:{" "}
                     {convertToLocalDate(product?.date_modified)
                       .split(",")[0]
                       .replaceAll("/", "-")}
                   </p>
+                </div>
+              </td>
+            )}
+
+            {columnSet.has("Jan Code") && (
+              <td
+                align="center"
+                className="border-[1.5px] border-[#f2f2f2] px-3 py-1"
+              >
+                <div
+                  onClick={variationWarning}
+                  className="w-full h-[35px] bg-[#f7f7f7] rounded px-2 flex items-center relative"
+                >
+                  <input
+                    type="text"
+                    className="text-black/[0.84] px-1 h-full w-[calc(100%-8px)] bg-transparent disabled:text-black/[0.54] text-[12px]"
+                    value={currentProduct?.sku}
+                    onChange={(e) => {
+                      setIs_update(true);
+                      setCurrentProduct((prev) => ({
+                        ...prev,
+                        sku: e.target.value,
+                      }));
+                    }}
+                  />
                 </div>
               </td>
             )}

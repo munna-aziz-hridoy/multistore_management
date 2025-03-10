@@ -1,4 +1,4 @@
-import { shopify_api, woo_api } from "@/config";
+import { woo_api } from "@/config";
 import { useState, useEffect } from "react";
 
 const useProductVariations = (shop, id) => {
@@ -11,12 +11,6 @@ const useProductVariations = (shop, id) => {
     orderby: "menu_order",
   };
   let endpoint = `products/${id}/variations`;
-
-  if (shop?.platform === "shopify") {
-    api = shopify_api(shop);
-    options = {};
-    endpoint = "products";
-  }
 
   const fetchProducts = () => {
     setLoading(true);

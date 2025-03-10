@@ -1,6 +1,8 @@
 import { woo_api } from "@/config";
 import { useState, useEffect } from "react";
 
+const productsCache = new Map();
+
 const useProducts = (
   shop,
   search = "",
@@ -15,72 +17,68 @@ const useProducts = (
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(20);
 
+  const cacheKey = shop
+    ? `${shop.id}_${search}_${barcode}_${category}_${featured}_${stock_status}_${page}_${perPage}`
+    : null;
+
   const fetchProducts = () => {
-    if (shop?.platform === "shopify") {
-      const shopName = shop?.domain?.replaceAll("https://", "");
-      const api_key = shop?.ck;
-      const api_secret = shop?.cs;
-      const accessToken = "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";
+    if (!shop || !cacheKey) return;
 
-      const url = `https://${shopName}/admin/api/2022-04/products.json`;
-
-      setLoading(true);
-
-      fetch(url, {
-        headers: {
-          Authorization: `Basic ${api_key}:${accessToken}`,
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setLoading(false);
-          setProducts(data);
-          setTotal_page(1);
-        });
-    } else {
-      let options = {
-        page: products.length === 0 ? 1 : page,
-        per_page: perPage,
-        category: category || "",
-        search: search,
-        order: "asc",
-        orderby: "menu_order",
-        sku: barcode || "",
-        featured: featured,
-      };
-
-      if (stock_status) {
-        options.stock_status = stock_status;
-      }
-
-      let endpoint = "products";
-
-      setLoading(true);
-      woo_api(shop)
-        ?.get(endpoint, options)
-        .then((res) => {
-          setLoading(false);
-
-          if (res.headers) {
-            setTotal_page(parseInt(res?.headers["x-wp-totalpages"]));
-          }
-          setProducts(res?.data);
-        })
-        .catch((err) => {
-          setLoading(false);
-          setProducts([]);
-        })
-        ?.finally(() => setLoading(false));
+    const cachedData = productsCache.get(cacheKey);
+    if (cachedData) {
+      setProducts(cachedData.products);
+      setTotal_page(cachedData.total_page);
+      return;
     }
+
+    let options = {
+      page: products.length === 0 ? 1 : page,
+      per_page: perPage,
+      category: category || "",
+      search: search,
+      order: "asc",
+      orderby: "menu_order",
+      sku: barcode || "",
+      featured: featured,
+    };
+
+    if (stock_status) {
+      options.stock_status = stock_status;
+    }
+
+    let endpoint = "products";
+
+    setLoading(true);
+    woo_api(shop)
+      ?.get(endpoint, options)
+      .then((res) => {
+        if (res.headers) {
+          const totalPages = parseInt(res.headers["x-wp-totalpages"]);
+          setTotal_page(totalPages);
+
+          productsCache.set(cacheKey, {
+            products: res.data,
+            total_page: totalPages,
+          });
+        }
+        setProducts(res.data);
+      })
+      .catch(() => {
+        setProducts([]);
+      })
+      .finally(() => setLoading(false));
   };
 
   const refetch = () => {
+    if (cacheKey) {
+      productsCache.delete(cacheKey);
+    }
     fetchProducts();
   };
 
   useEffect(() => {
     fetchProducts();
-  }, [page, featured, category, shop, perPage, stock_status]);
+  }, [page, featured, category, shop, perPage, stock_status, search, barcode]);
 
   return {
     products,

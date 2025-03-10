@@ -11,7 +11,6 @@ import {
   useRouter,
   useSearchParams,
 } from "next/navigation";
-import Invoice from "@/components/common/invoice";
 
 function ShopPage() {
   const [activeTab, setActiveTab] = useState("products");
@@ -80,8 +79,13 @@ function ShopPage() {
           Orders
         </button>
       </div>
-      {activeTab === "products" && <ProductTable />}
-      {activeTab === "orders" && <OrderTable />}
+      {activeTab === "products" ? (
+        <ProductTable />
+      ) : activeTab === "orders" ? (
+        <OrderTable />
+      ) : (
+        <div />
+      )}
     </div>
   );
 }
