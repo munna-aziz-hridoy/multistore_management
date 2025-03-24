@@ -519,19 +519,27 @@ const Row = ({
                       defaultValue={metaData?.value}
                       onChange={(e) => {
                         setIs_update(true);
-                        setCurrentProduct((prev) => ({
-                          ...prev,
-                          meta_data: prev?.meta_data?.map((item) => {
-                            if (item?.key === col?.meta_key) {
-                              return {
-                                ...item,
-                                value: e.target.value,
-                              };
-                            } else {
-                              return item;
-                            }
-                          }),
-                        }));
+                        setCurrentProduct((prev) => {
+                          const metaExists = prev.meta_data?.some(
+                            (item) => item?.key === col.meta_key
+                          );
+
+                          const updatedMetaData = metaExists
+                            ? prev.meta_data.map((item) =>
+                                item?.key === col.meta_key
+                                  ? { ...item, value: e.target.value }
+                                  : item
+                              )
+                            : [
+                                ...(prev.meta_data || []),
+                                { key: col.meta_key, value: e.target.value },
+                              ];
+
+                          return {
+                            ...prev,
+                            meta_data: updatedMetaData,
+                          };
+                        });
                       }}
                       disabled={product?.variations?.length > 0 ? true : false}
                     />
