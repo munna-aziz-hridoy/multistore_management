@@ -10,6 +10,7 @@ import { ShopContext, SidebarContext, UserContext } from "@/context";
 
 import { HiOutlinePlusCircle } from "react-icons/hi";
 import { CgProfile } from "react-icons/cg";
+import { RiRobot2Line } from "react-icons/ri";
 import { IoSettingsOutline } from "react-icons/io5";
 import { TbLogout2 } from "react-icons/tb";
 
@@ -164,6 +165,20 @@ function Sidebar() {
             >
               {collapse ? "ut" : "utilities"}
             </p>
+            <Link href="/ichiban">
+              <div
+                className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[12px] border-l-4 ${
+                  collapse && "justify-center"
+                } ${
+                  pathname.includes("ichiban")
+                    ? "border-[#D1E4FF] bg-white/[0.05]"
+                    : "border-transparent bg-transparent"
+                }`}
+              >
+                <RiRobot2Line fontSize={22} />
+                {!collapse && delay && <p className="text-sm">Ichiban</p>}
+              </div>
+            </Link>
             <Link href={"/profile"}>
               <div
                 className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[12px] border-l-4 ${
