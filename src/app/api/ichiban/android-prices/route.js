@@ -14,6 +14,10 @@ const price_map = {
   "-100px": ",",
 };
 
+// Force this route to be dynamic (not prerendered)
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function GET(request) {
   const cat_id = request.nextUrl.searchParams.get("cat_id");
 
