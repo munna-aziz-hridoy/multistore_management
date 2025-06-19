@@ -179,6 +179,20 @@ function Sidebar() {
                 {!collapse && delay && <p className="text-sm">Ichiban</p>}
               </div>
             </Link>
+            <Link href={"/kaitori"}>
+              <div
+                className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[12px] border-l-4 ${
+                  collapse && "justify-center"
+                } ${
+                  pathname.includes("kaitori")
+                    ? "border-[#D1E4FF] bg-white/[0.05]"
+                    : "border-transparent bg-transparent"
+                }`}
+              >
+                <RiRobot2Line fontSize={22} />
+                {!collapse && delay && <p className="text-sm">Kaitori</p>}
+              </div>
+            </Link>
             <Link href={"/profile"}>
               <div
                 className={`flex items-center gap-3 text-white/[0.54] text-[15px] w-full h-[50px] p-[12px] border-l-4 ${
